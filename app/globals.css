@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --background-soft: rgba(92, 188, 180, 0.6);
 }
 
 @theme inline {
@@ -14,12 +15,18 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #00312c;
     --foreground: #ededed;
+    --background-soft: rgba(0, 96, 86, 0.6);
   }
 }
 
+html {
+  font-size: 62.5%; /* 62.5% of 16 is 10, this way rem is base 10 and % unit makes size adpt to different browser size settings */
+}
+
 body {
+  font-size: 1.6rem;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
