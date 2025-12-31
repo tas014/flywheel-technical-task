@@ -5,7 +5,9 @@ export default function AuthLayout({
 }) {
   return (
     <div>
-      <main>{children}</main>
+      <main>
+        <section>{children}</section>
+      </main>
       <footer>Hi! I'm a footer</footer>
     </div>
   );

@@ -1,75 +1,59 @@
 "use server";
 
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { AuthData } from "./types/formData";
+import { type ComponentState } from "react";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+// 1. Signature: (prevState, formData)
+// This allows useActionState to track the return value
+export async function login(prevState: ComponentState, formData: FormData) {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
-type errorMessage = string;
+  // Use the SSR client that handles cookies automatically
+  const supabase = await createClient();
 
-export function login(formData: FormData): Promise<never | errorMessage> {
-  const didLogin = new Promise<never | errorMessage>((res, rej) => {
-    if (!supabaseUrl || !supabasePublishableKey)
-      throw new Error("Supabase environment credentials are missing!");
-
-    const supabase = createClient(supabaseUrl, supabasePublishableKey);
-
-    // Extract data from the form
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    supabase.auth
-      .signInWithPassword({
-        email,
-        password,
-      })
-      .then(() => {
-        // Clear cache so app reflects logged-in state
-        revalidatePath("/", "layout");
-        res(redirect("/"));
-      })
-      .catch((err) => rej("There was an error logging in: " + err));
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
   });
-  return didLogin;
+
+  if (error) {
+    return error.message; // Resolves as the 'state' in your component
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/");
 }
 
-export function signup(formData: AuthData): Promise<never | errorMessage> {
-  if (!supabaseUrl || !supabasePublishableKey) {
-    throw new Error("Supabase environment credentials are missing!");
+export async function signup(prevState: ComponentState, formData: FormData) {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+
+  if (password !== confirmPassword) {
+    return "Passwords do not match.";
   }
-  const { email, password } = formData;
-  const didSignup = new Promise<never | errorMessage>((res, rej) => {
-    const supabase = createClient(supabaseUrl, supabasePublishableKey);
-    supabase.auth
-      .signUp({
-        email,
-        password,
-      })
-      .then(() => {
-        revalidatePath("/", "layout");
-        res(redirect("/"));
-      })
-      .catch((err) => rej("There was an error logging in: " + err));
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
   });
-  return didSignup;
+
+  if (error) {
+    return error.message;
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/");
 }
 
-export function signOut(): Promise<never | errorMessage> {
-  if (!supabaseUrl || !supabasePublishableKey) {
-    throw new Error("Supabase environment credentials are missing!");
-  }
-  const didSignOut = new Promise<never | errorMessage>((res, rej) => {
-    const supabase = createClient(supabaseUrl, supabasePublishableKey);
-    supabase.auth
-      .signOut()
-      .then(() => {
-        revalidatePath("/", "layout");
-        res(redirect("/login"));
-      })
-      .catch((err) => rej("There was an error signing out :" + err));
-  });
-  return didSignOut;
+export async function signOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+
+  revalidatePath("/", "layout");
+  redirect("/login");
 }

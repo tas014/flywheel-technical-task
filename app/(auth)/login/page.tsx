@@ -1,7 +1,58 @@
+"use client";
+
+import { login } from "../../_lib/actions";
+import { useActionState } from "react";
+
 export default function Login() {
+  const [error, formAction, isPending] = useActionState(login, null);
+
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="max-w-md mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">Login</h1>
+      <form action={formAction} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium" htmlFor="email">
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="example@mail.yay"
+            required
+            disabled={isPending}
+            className="w-full p-2 border rounded bg-transparent disabled:opacity-50"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium" htmlFor="password">
+            Password
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            disabled={isPending}
+            className="w-full p-2 border rounded bg-transparent disabled:opacity-50"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={isPending}
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:bg-gray-500 transition-colors"
+        >
+          {isPending ? "Logging in..." : "Login"}
+        </button>
+
+        {error && (
+          <div className="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded">
+            {error}
+          </div>
+        )}
+      </form>
     </div>
   );
 }
