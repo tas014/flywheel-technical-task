@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 
 type SortMode = "creation-date" | "due-date" | "urgency";
 type SortOrder = "asc" | "desc";
@@ -8,6 +9,7 @@ type SortOrder = "asc" | "desc";
 export default function TaskSort() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
   const currentSort = (searchParams.get("sort") || "creation-date") as SortMode;
   const currentOrder = (searchParams.get("order") || "desc") as SortOrder;
 
@@ -15,14 +17,18 @@ export default function TaskSort() {
     const params = new URLSearchParams(searchParams);
     params.set("sort", sort);
     params.set("order", "desc");
-    router.push(`?${params.toString()}`);
+    startTransition(() => {
+      router.push(`?${params.toString()}`);
+    });
   };
 
   const handleOrderToggle = () => {
     const params = new URLSearchParams(searchParams);
     const newOrder = currentOrder === "asc" ? "desc" : "asc";
     params.set("order", newOrder);
-    router.push(`?${params.toString()}`);
+    startTransition(() => {
+      router.push(`?${params.toString()}`);
+    });
   };
 
   const sorts: { label: string; value: SortMode }[] = [
@@ -32,17 +38,22 @@ export default function TaskSort() {
   ];
 
   return (
-    <div className="flex gap-2 items-center">
+    <div
+      className={`flex gap-2 items-center transition-opacity ${
+        isPending ? "opacity-60" : "opacity-100"
+      }`}
+    >
       <div className="flex gap-2">
         {sorts.map((sort) => (
           <button
             key={sort.value}
             onClick={() => handleSortChange(sort.value)}
+            disabled={isPending}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
               currentSort === sort.value
                 ? "bg-indigo-600 text-white"
                 : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
-            }`}
+            } ${isPending ? "cursor-not-allowed" : ""}`}
           >
             {sort.label}
           </button>
@@ -51,38 +62,51 @@ export default function TaskSort() {
 
       <button
         onClick={handleOrderToggle}
-        className="ml-2 px-2 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all"
+        disabled={isPending}
+        className={`ml-2 px-2 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all ${
+          isPending ? "cursor-not-allowed opacity-60" : ""
+        }`}
         title={`Sort ${currentOrder === "asc" ? "descending" : "ascending"}`}
       >
         {currentOrder === "asc" ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
+            width="24"
+            height="24"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            className="icon icon-tabler icons-tabler-outline icon-tabler-sort-ascending"
           >
-            <polyline points="12 5 19 12 12 19" />
-            <polyline points="5 5 12 12 5 19" />
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M4 6l7 0" />
+            <path d="M4 12l7 0" />
+            <path d="M4 18l9 0" />
+            <path d="M15 9l3 -3l3 3" />
+            <path d="M18 6l0 12" />
           </svg>
         ) : (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
+            width="24"
+            height="24"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            className="icon icon-tabler icons-tabler-outline icon-tabler-sort-descending"
           >
-            <polyline points="12 19 5 12 12 5" />
-            <polyline points="19 19 12 12 19 5" />
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M4 6l9 0" />
+            <path d="M4 12l7 0" />
+            <path d="M4 18l7 0" />
+            <path d="M15 15l3 3l3 -3" />
+            <path d="M18 6l0 12" />
           </svg>
         )}
       </button>

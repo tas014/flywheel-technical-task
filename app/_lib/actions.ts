@@ -3,8 +3,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { type ComponentState } from "react";
-import type { Task, TaskInsert, TaskUpdate, TaskFormData } from "./types/tasks";
+import type { ComponentState } from "react";
+import type { TaskInsert, TaskUpdate, TaskFormData } from "./types/tasks";
 import { AuthFormData, ErrorMessage } from "./types/auth";
 
 // Auth
@@ -13,9 +13,8 @@ async function login(
   prevState: ComponentState,
   formData: FormData
 ): Promise<ErrorMessage> | never {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
+  const { email, password } = _getAuthFormData(formData);
+  if (!email || !password) return "Missing user credentials";
   // Use the SSR client that handles cookies automatically
   const supabase = await createClient();
 

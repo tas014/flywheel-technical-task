@@ -10,4 +10,24 @@ type TaskFormData = {
   status: boolean;
 };
 
-export type { Task, TaskInsert, TaskUpdate, TaskFormData };
+type FilterMode = "all" | "complete" | "pending";
+type SortMode = "creation-date" | "due-date" | "urgency";
+type SortOrder = "asc" | "desc";
+
+type FetchTasksParams = {
+  filter?: FilterMode;
+  sort?: SortMode;
+  order?: SortOrder;
+  search?: string;
+};
+
+export type {
+  Task,
+  TaskInsert,
+  TaskUpdate,
+  TaskFormData,
+  FilterMode,
+  SortMode,
+  SortOrder,
+  FetchTasksParams,
+};
