@@ -1,12 +1,13 @@
-import { signOut } from "@/app/_lib/actions";
+import SignOutButton from "../shared/SignOutButton";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[var(--background-soft)] backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center px-4">
-        <h1>Hi! I'm a Header</h1>
-        <button onClick={signOut}>Sign Out</button>
+    <header className="flex justify-between items-center mb-10">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-zinc-400 text-sm">User</p>
       </div>
+      <SignOutButton />
     </header>
   );
 }

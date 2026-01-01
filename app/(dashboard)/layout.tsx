@@ -8,7 +8,9 @@ export default function TaskLayout({
   return (
     <div className="grid min-h-screen grid-rows-[max-content_1fr_max-content]">
       <Header />
-      <main className="overflow-y-auto px-4 py-8">{children}</main>
+      <main className="min-h-screen bg-zinc-950 text-zinc-100 p-6">
+        {children}
+      </main>
       <footer className="bg-[var(--background-soft)]">Project info: ...</footer>
     </div>
   );

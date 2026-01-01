@@ -1,16 +1,14 @@
 "use client";
 
-import { signup } from "../../_lib/actions";
+import { signUp } from "../../_lib/actions";
 import { useActionState } from "react";
 
 export default function Signup() {
-  const [error, formAction, isPending] = useActionState(signup, null);
+  const [error, formAction, isPending] = useActionState(signUp, null);
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white/5 rounded-lg border border-white/10">
       <h1 className="text-2xl font-bold mb-6">Signup</h1>
-
-      {/* 2. Use the action prop instead of onSubmit */}
       <form action={formAction} className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1" htmlFor="email">
