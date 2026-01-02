@@ -33,6 +33,15 @@ export default async function DashboardPage({
   const filter = params.filter || "all";
 
   return (
-    <Dashboard sortedTasks={sortedTasks} dbError={dbError} filter={filter} />
+    <>
+      <h1 className="text-4xl font-bold">FlyWheel task Manager</h1>
+      <section>
+        <Dashboard
+          sortedTasks={sortedTasks}
+          dbError={dbError}
+          filter={filter}
+        />
+      </section>
+    </>
   );
 }

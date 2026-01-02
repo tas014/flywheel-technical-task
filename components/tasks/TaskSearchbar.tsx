@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import type { FetchTasksParams } from "@/app/_lib/types/tasks";
 
 interface TaskSearchBarProps {
-  onSearchChange: (updates: Partial<FetchTasksParams>) => void;
+  onSearchChange: (updates: FetchTasksParams) => void;
 }
 
 export default function TaskSearchBar({ onSearchChange }: TaskSearchBarProps) {
@@ -19,7 +19,7 @@ export default function TaskSearchBar({ onSearchChange }: TaskSearchBarProps) {
   }, [term, onSearchChange]);
 
   return (
-    <div className="relative">
+    <div className="w-2xl">
       <input
         value={term}
         onChange={(e) => setTerm(e.target.value)}

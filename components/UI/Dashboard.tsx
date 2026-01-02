@@ -42,15 +42,7 @@ export default function Dashboard({
   );
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {/* Create Section */}
-      <section className="mb-12">
-        <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-4">
-          New Task
-        </h2>
-        <CreateTaskForm />
-      </section>
-
+    <div>
       {/* List Section */}
       <section>
         <div className="mb-6">
@@ -58,9 +50,9 @@ export default function Dashboard({
             Your Tasks ({sortedTasks?.length || 0})
           </h2>
           <div className="flex flex-col gap-3">
+            <TaskSearchBar onSearchChange={updateParams} />
             <TaskFilter onFilterChange={updateParams} />
             <TaskSort onParamsChange={updateParams} />
-            <TaskSearchBar onSearchChange={updateParams} />
           </div>
         </div>
 
