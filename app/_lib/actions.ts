@@ -86,8 +86,9 @@ async function createTask(prevState: ComponentState, formData: FormData) {
 
   const { error } = await supabase.from("tasks").insert([newTask]);
 
-  if (error) throw new Error(error.message);
+  if (error) return error.message;
   revalidatePath("/"); // Refresh task list
+  return "success";
 }
 
 // Args made so that editTask(id, boolean) updates task status, and editTask(id, formData) updates multiple fields
@@ -99,7 +100,7 @@ async function editTask(id: number, toggleOrForm: FormData | boolean) {
   } else {
     const { title, description, status, due_date } =
       _getTaskFormData(toggleOrForm);
-    if (!title) throw new Error("Task must have a title.");
+    if (!title) return "Task must have a title.";
     updateData = {
       title,
       description,
@@ -113,16 +114,18 @@ async function editTask(id: number, toggleOrForm: FormData | boolean) {
     .update(updateData)
     .eq("id", id);
 
-  if (error) throw new Error(error.message);
+  if (error) return error.message;
   revalidatePath("/");
+  return "success";
 }
 
 async function deleteTask(id: number) {
   const supabase = await createClient();
   // ensure we delete only the selected task
   const { error } = await supabase.from("tasks").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) return error.message;
   revalidatePath("/");
+  return "success";
 }
 
 function _getAuthFormData(formData: FormData): AuthFormData {

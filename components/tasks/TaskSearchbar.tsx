@@ -1,29 +1,24 @@
 "use client";
 
-import { useTransition, useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import type { FetchTasksParams } from "@/app/_lib/types/tasks";
 
-export default function TaskSearchBar() {
-  const router = useRouter();
+interface TaskSearchBarProps {
+  onSearchChange: (updates: Partial<FetchTasksParams>) => void;
+}
+
+export default function TaskSearchBar({ onSearchChange }: TaskSearchBarProps) {
   const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
   const [term, setTerm] = useState(searchParams.get("search") || "");
 
   useEffect(() => {
-    // Debounce the URL update
     const handler = setTimeout(() => {
-      const params = new URLSearchParams(window.location.search);
-      if (term) params.set("search", term);
-      else params.delete("search");
-
-      // Wrap in transition to keep UI responsive
-      startTransition(() => {
-        router.push(`?${params.toString()}`, { scroll: false });
-      });
+      onSearchChange({ search: term });
     }, 500);
 
     return () => clearTimeout(handler);
-  }, [term, router]);
+  }, [term, onSearchChange]);
 
   return (
     <div className="relative">
@@ -31,13 +26,8 @@ export default function TaskSearchBar() {
         value={term}
         onChange={(e) => setTerm(e.target.value)}
         placeholder="Search tasks..."
-        className={`w-full bg-zinc-900 border-zinc-800 rounded-lg px-4 py-2 transition-all ${
-          isPending ? "opacity-70 ring-1 ring-indigo-500" : ""
-        }`}
+        className="w-full bg-zinc-900 border-zinc-800 rounded-lg px-4 py-2 transition-all"
       />
-      {isPending && (
-        <div className="absolute right-3 top-2.5 animate-spin h-4 w-4 border-2 border-indigo-500 border-t-transparent rounded-full" />
-      )}
     </div>
   );
 }

@@ -1,0 +1,95 @@
+"use client";
+
+import { useCallback, useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import TaskItem from "@/components/tasks/TaskItem";
+import CreateTaskForm from "@/components/tasks/TaskCreationForm";
+import TaskFilter from "@/components/tasks/TaskFilter";
+import TaskSearchBar from "@/components/tasks/TaskSearchbar";
+import TaskSort from "@/components/tasks/TaskSort";
+import TaskListTransition from "@/components/tasks/TaskListTransition";
+import type { Task, FetchTasksParams } from "@/app/_lib/types/tasks";
+import type { PostgrestError } from "@supabase/supabase-js";
+import { addURLParams } from "@/app/_lib/fetching";
+
+type PageContentProps = {
+  sortedTasks: Task[];
+  dbError: PostgrestError | null;
+  filter: string;
+};
+
+export default function Dashboard({
+  sortedTasks,
+  dbError,
+  filter,
+}: PageContentProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+
+  const updateParams = useCallback(
+    (updates: FetchTasksParams) => {
+      const newUrl = addURLParams(searchParams, updates);
+      startTransition(() => {
+        router.push(newUrl);
+      });
+    },
+    [searchParams, router]
+  );
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      {/* Create Section */}
+      <section className="mb-12">
+        <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-4">
+          New Task
+        </h2>
+        <CreateTaskForm />
+      </section>
+
+      {/* List Section */}
+      <section>
+        <div className="mb-6">
+          <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-4">
+            Your Tasks ({sortedTasks?.length || 0})
+          </h2>
+          <div className="flex flex-col gap-3">
+            <TaskFilter onFilterChange={updateParams} />
+            <TaskSort onParamsChange={updateParams} />
+            <TaskSearchBar onSearchChange={updateParams} />
+          </div>
+        </div>
+
+        <div className="relative">
+          <TaskListTransition
+            taskCount={sortedTasks?.length || 0}
+            isPending={isPending}
+          >
+            {isPending && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                <div className="animate-spin h-4 w-4 border-2 border-indigo-500 border-t-transparent rounded-full" />
+              </div>
+            )}
+
+            {dbError && <p className="text-red-400">Could not load tasks.</p>}
+
+            {sortedTasks?.map((data: Task) => (
+              <TaskItem key={data.id} data={data} />
+            ))}
+
+            {sortedTasks?.length === 0 && (
+              <div className="text-center py-12 border-2 border-dashed border-zinc-800 rounded-xl">
+                <p className="text-zinc-500 text-sm">
+                  No tasks found.
+                  {filter !== "all"
+                    ? " Try a different filter!"
+                    : " Get started by creating one!"}
+                </p>
+              </div>
+            )}
+          </TaskListTransition>
+        </div>
+      </section>
+    </div>
+  );
+}

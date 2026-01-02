@@ -1,24 +1,21 @@
 "use client";
 
-import { useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 
 interface TaskListTransitionProps {
   children: React.ReactNode;
   taskCount: number;
+  isPending: boolean;
 }
 
 export default function TaskListTransition({
   children,
-  taskCount,
+  isPending,
 }: TaskListTransitionProps) {
-  const [isPending] = useTransition();
   const searchParams = useSearchParams();
 
-  // Determine if we're actively filtering/searching
   const hasActiveFilters =
-    searchParams.get("filter") !== "all" &&
-    searchParams.get("filter") !== null;
+    searchParams.get("filter") !== "all" && searchParams.get("filter") !== null;
   const hasSearch = searchParams.has("search");
   const hasCustomSort = searchParams.get("sort") !== "creation-date";
 
@@ -38,10 +35,10 @@ export default function TaskListTransition({
               {hasSearch
                 ? "Searching..."
                 : hasActiveFilters
-                  ? "Filtering..."
-                  : hasCustomSort
-                    ? "Sorting..."
-                    : "Loading..."}
+                ? "Filtering..."
+                : hasCustomSort
+                ? "Sorting..."
+                : "Loading..."}
             </span>
           </div>
         </div>

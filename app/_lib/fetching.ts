@@ -1,6 +1,32 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import type { Task, FetchTasksParams } from "./types/tasks";
+import type { FetchTasksParams } from "./types/tasks";
 import { filterTasks, sortTasks } from "./filter";
+
+export function addURLParams(
+  searchParams: URLSearchParams,
+  updates: Partial<FetchTasksParams>
+): string {
+  const params = new URLSearchParams(searchParams);
+
+  if (updates.filter !== undefined) {
+    params.set("filter", updates.filter);
+  }
+  if (updates.sort !== undefined) {
+    params.set("sort", updates.sort);
+  }
+  if (updates.order !== undefined) {
+    params.set("order", updates.order);
+  }
+  if (updates.search !== undefined) {
+    if (updates.search) {
+      params.set("search", updates.search);
+    } else {
+      params.delete("search");
+    }
+  }
+
+  return `?${params.toString()}`;
+}
 
 export async function fetchAndProcessTasks(
   supabase: SupabaseClient,
