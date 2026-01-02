@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import type { FetchTasksParams } from "@/app/_lib/types/tasks";
 
 interface TaskSearchBarProps {
@@ -9,8 +8,7 @@ interface TaskSearchBarProps {
 }
 
 export default function TaskSearchBar({ onSearchChange }: TaskSearchBarProps) {
-  const searchParams = useSearchParams();
-  const [term, setTerm] = useState(searchParams.get("search") || "");
+  const [term, setTerm] = useState("");
 
   useEffect(() => {
     const handler = setTimeout(() => {

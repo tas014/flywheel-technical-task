@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useTransition } from "react";
+import { useCallback, useTransition, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import TaskItem from "@/components/tasks/TaskItem";
 import CreateTaskForm from "@/components/tasks/TaskCreationForm";
@@ -25,16 +25,20 @@ export default function Dashboard({
 }: PageContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const searchParamsRef = useRef(searchParams);
   const [isPending, startTransition] = useTransition();
+
+  // Update ref whenever searchParams changes, but don't use it in dependency array
+  searchParamsRef.current = searchParams;
 
   const updateParams = useCallback(
     (updates: FetchTasksParams) => {
-      const newUrl = addURLParams(searchParams, updates);
+      const newUrl = addURLParams(searchParamsRef.current, updates);
       startTransition(() => {
         router.push(newUrl);
       });
     },
-    [searchParams, router]
+    [router]
   );
 
   return (
@@ -65,12 +69,6 @@ export default function Dashboard({
             taskCount={sortedTasks?.length || 0}
             isPending={isPending}
           >
-            {isPending && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-                <div className="animate-spin h-4 w-4 border-2 border-indigo-500 border-t-transparent rounded-full" />
-              </div>
-            )}
-
             {dbError && <p className="text-red-400">Could not load tasks.</p>}
 
             {sortedTasks?.map((data: Task) => (
