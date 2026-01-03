@@ -3,7 +3,7 @@ import UserIcon from "./Icons/User";
 
 export default function Header() {
   return (
-    <header className="flex place-content-center p-5">
+    <header className="flex place-content-center p-5 bg-[var(--background-soft)]">
       <div className="w-5/6 flex justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold tracking-tight">Flywheel</h1>

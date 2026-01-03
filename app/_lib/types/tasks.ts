@@ -11,7 +11,7 @@ type TaskFormData = {
 };
 
 type FilterMode = "all" | "complete" | "pending";
-type SortMode = "creation-date" | "due-date" | "urgency";
+type SortMode = "creation-date" | "due-date" | "urgency" | "none";
 type SortOrder = "asc" | "desc";
 
 type FetchTasksParams = {

@@ -12,7 +12,11 @@ export function addURLParams(
     params.set("filter", updates.filter);
   }
   if (updates.sort !== undefined) {
-    params.set("sort", updates.sort);
+    if (updates.sort === "none") {
+      params.delete("sort");
+    } else {
+      params.set("sort", updates.sort);
+    }
   }
   if (updates.order !== undefined) {
     params.set("order", updates.order);

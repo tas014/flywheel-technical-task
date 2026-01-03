@@ -1,19 +1,21 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import Check from "../UI/Icons/Check";
 import type { FetchTasksParams } from "@/app/_lib/types/tasks";
-
-type FilterMode = "all" | "complete" | "pending";
+import { FilterMode } from "@/app/_lib/types/tasks";
 
 interface TaskFilterProps {
-  onFilterChange: (updates: Partial<FetchTasksParams>) => void;
+  onFilterChange: (updates: FetchTasksParams) => void;
 }
 
 export default function TaskFilter({ onFilterChange }: TaskFilterProps) {
   const searchParams = useSearchParams();
-  const currentFilter = (searchParams.get("filter") || "all") as FilterMode;
+  // no need for effect and state since the page will update on URL change
+  const currentFilter = (searchParams.get("filter") || "none") as FilterMode;
 
-  const handleFilterChange = (filter: FilterMode) => {
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const filter = e.target.value as FilterMode;
     onFilterChange({ filter });
   };
 
@@ -24,20 +26,20 @@ export default function TaskFilter({ onFilterChange }: TaskFilterProps) {
   ];
 
   return (
-    <div className="flex gap-2 items-center">
-      {filters.map((filter) => (
-        <button
-          key={filter.value}
-          onClick={() => handleFilterChange(filter.value)}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-            currentFilter === filter.value
-              ? "bg-indigo-600 text-white"
-              : "bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
-          }`}
-        >
-          {filter.label}
-        </button>
-      ))}
+    <div className="flex items-center gap-2">
+      <span>Filter: </span>
+      <select
+        value={currentFilter}
+        onChange={handleFilterChange}
+        className="px-3 py-1.5 rounded-lg text-sm font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all appearance-none cursor-pointer"
+      >
+        {filters.map((filter) => (
+          <option key={filter.value} value={filter.value}>
+            {filter.label}
+          </option>
+        ))}
+      </select>
+      <Check />
     </div>
   );
 }
