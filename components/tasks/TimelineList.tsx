@@ -10,41 +10,94 @@ type TimelineListProps = {
 };
 
 export default function TimelineList({ tasks, dbError }: TimelineListProps) {
-  // Separate tasks by due_date
+  if (tasks.length === 0) {
+    return (
+      <div>
+        {dbError && (
+          <div className="mb-4 p-4 rounded-lg bg-red-900/20 border border-red-800">
+            <p className="text-red-400 text-sm">Could not load tasks.</p>
+          </div>
+        )}
+        <div className="text-center py-12 border-2 border-dashed border-zinc-800 rounded-xl">
+          <p className="text-zinc-500 text-sm">No tasks found. Get started by creating one!</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Separate tasks by deadline status
   const noDeadlineTasks = tasks.filter((task) => !task.due_date);
   const tasksWithDeadlines = tasks.filter((task) => task.due_date);
 
-  // Group tasks with deadlines by date
-  const tasksByDate = new Map<string, Task[]>();
+  // Get date range from earliest created_at to latest due_date
+  let minDate: Date | null = null;
+  let maxDate: Date | null = null;
+
   tasksWithDeadlines.forEach((task) => {
-    const dateKey = task.due_date!;
-    if (!tasksByDate.has(dateKey)) {
-      tasksByDate.set(dateKey, []);
+    const createdDate = new Date(task.created_at);
+    const dueDate = new Date(task.due_date!);
+
+    if (!minDate || createdDate < minDate) {
+      minDate = createdDate;
     }
-    tasksByDate.get(dateKey)!.push(task);
+    if (!maxDate || dueDate > maxDate) {
+      maxDate = dueDate;
+    }
   });
 
-  // Sort dates chronologically
-  const sortedDates = Array.from(tasksByDate.keys()).sort();
-
-  const renderSection = (title: string, sectionTasks: Task[], isNoDeadline = false) => (
-    <div key={title} className="mb-6">
-      <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3 px-4">
-        {title} ({sectionTasks.length})
-      </h3>
-      <div className="space-y-2 px-4">
-        {sectionTasks.length === 0 ? (
-          <div className="text-center py-6 border-2 border-dashed border-zinc-800 rounded-lg">
-            <p className="text-zinc-600 text-sm">
-              {isNoDeadline ? "No tasks without deadlines" : "No tasks for this date"}
-            </p>
+  if (!minDate || !maxDate) {
+    // Only tasks without deadlines
+    return (
+      <div>
+        {dbError && (
+          <div className="mb-4 p-4 rounded-lg bg-red-900/20 border border-red-800">
+            <p className="text-red-400 text-sm">Could not load tasks.</p>
           </div>
-        ) : (
-          sectionTasks.map((task) => <TaskItem key={task.id} data={task} />)
         )}
+        <div className="mb-6">
+          <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3 px-4">
+            No Deadline ({noDeadlineTasks.length})
+          </h3>
+          <div className="space-y-2 px-4">
+            {noDeadlineTasks.map((task) => (
+              <TaskItem key={task.id} data={task} />
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // Generate all dates in range (inclusive)
+  const dateRange: Date[] = [];
+  const currentDate = new Date(minDate);
+  currentDate.setHours(0, 0, 0, 0);
+  maxDate.setHours(0, 0, 0, 0);
+
+  while (currentDate <= maxDate) {
+    dateRange.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  // Map each task to columns it occupies
+  const taskDateRanges = new Map<number, { startIndex: number; endIndex: number }>();
+  tasksWithDeadlines.forEach((task) => {
+    const createdDate = new Date(task.created_at);
+    createdDate.setHours(0, 0, 0, 0);
+    const dueDate = new Date(task.due_date!);
+    dueDate.setHours(0, 0, 0, 0);
+
+    const startIndex = dateRange.findIndex(
+      (d) => d.getTime() === createdDate.getTime()
+    );
+    const endIndex = dateRange.findIndex(
+      (d) => d.getTime() === dueDate.getTime()
+    );
+
+    if (startIndex !== -1 && endIndex !== -1) {
+      taskDateRanges.set(task.id, { startIndex, endIndex });
+    }
+  });
 
   return (
     <div>
@@ -54,33 +107,61 @@ export default function TimelineList({ tasks, dbError }: TimelineListProps) {
         </div>
       )}
 
-      <div className="space-y-0">
-        {/* No Deadline Section */}
-        {renderSection("No Deadline", noDeadlineTasks, true)}
+      {/* Timeline Header with Dates */}
+      <div className="mb-6">
+        <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3 px-4">
+          Timeline
+        </h3>
+        <div className="flex gap-1 px-4 overflow-x-auto">
+          {dateRange.map((date, index) => (
+            <div
+              key={index}
+              className="flex-shrink-0 w-20 text-center text-xs font-medium text-zinc-500 p-2 bg-zinc-900/50 rounded"
+            >
+              <div className="text-zinc-400">{date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div>
+              <div className="text-zinc-600">{date.toLocaleDateString("en-US", { weekday: "narrow" })}</div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-        {/* Sections for each due date */}
-        {sortedDates.map((dateKey) => {
-          const date = new Date(dateKey);
-          const formattedDate = date.toLocaleDateString("en-US", {
-            weekday: "short",
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          });
+      {/* Tasks positioned in timeline */}
+      <div className="px-4 space-y-2">
+        {tasksWithDeadlines.map((task) => {
+          const range = taskDateRanges.get(task.id);
+          if (!range) return null;
 
-          return renderSection(
-            formattedDate,
-            tasksByDate.get(dateKey)!
+          const columnWidth = 80 + 4; // w-20 (80px) + gap-1 (4px)
+          const startOffset = range.startIndex * columnWidth;
+          const spanWidth = (range.endIndex - range.startIndex + 1) * columnWidth - 4;
+
+          return (
+            <div
+              key={task.id}
+              style={{
+                marginLeft: `calc(1rem + ${startOffset}px)`,
+                width: `${spanWidth}px`,
+              }}
+            >
+              <TaskItem data={task} />
+            </div>
           );
         })}
-
-        {/* Empty state if no tasks at all */}
-        {tasks.length === 0 && (
-          <div className="text-center py-12 border-2 border-dashed border-zinc-800 rounded-xl">
-            <p className="text-zinc-500 text-sm">No tasks found. Get started by creating one!</p>
-          </div>
-        )}
       </div>
+
+      {/* No Deadline Section */}
+      {noDeadlineTasks.length > 0 && (
+        <div className="mt-8">
+          <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3 px-4">
+            No Deadline ({noDeadlineTasks.length})
+          </h3>
+          <div className="space-y-2 px-4">
+            {noDeadlineTasks.map((task) => (
+              <TaskItem key={task.id} data={task} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
