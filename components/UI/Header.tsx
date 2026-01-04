@@ -8,7 +8,7 @@ export default function Header() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="flex place-content-center p-5 bg-[var(--background-soft)]">
+    <header className="flex place-content-center p-5 bg-(--background-soft)">
       <div className="w-5/6 flex justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold tracking-tight">Flywheel</h1>
@@ -16,7 +16,7 @@ export default function Header() {
         <div className="flex place-content-center gap-4 items-center">
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="p-2 rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors"
+            className="p-2 rounded-lg bg-(--button-color) hover:bg-(--button-highlight) transition-colors"
             title="Toggle dark mode"
           >
             {theme === "dark" ? (
@@ -58,7 +58,7 @@ export default function Header() {
             )}
           </button>
           <UserIcon />
-          <span className="text-zinc-400 text-sm">Username</span>
+          <span className="text-(--text-secondary) text-sm">Username</span>
           <SignOutButton />
         </div>
       </div>

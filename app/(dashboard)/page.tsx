@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { Task, FetchTasksParams } from "../_lib/types/tasks";
+import { FetchTasksParams } from "../_lib/types/tasks";
 import { fetchAndProcessTasks } from "../_lib/fetching";
 import Dashboard from "@/components/UI/Dashboard";
 

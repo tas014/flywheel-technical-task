@@ -33,7 +33,7 @@ export default function TaskSearchBar({ onSearchChange }: TaskSearchBarProps) {
         value={term}
         onChange={(e) => setTerm(e.target.value)}
         placeholder="Search tasks..."
-        className="w-full bg-zinc-900 border-zinc-800 rounded-lg px-4 py-2 transition-all"
+        className="w-full bg-(--bg-tertiary) border-(--border-color) rounded-lg px-4 py-2 transition-all"
       />
     </div>
   );

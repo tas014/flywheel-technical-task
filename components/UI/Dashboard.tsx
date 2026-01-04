@@ -50,7 +50,7 @@ export default function Dashboard({
       {/* List Section */}
       <section>
         <div className="mb-6">
-          <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-4">
+          <h2 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
             Your Tasks ({sortedTasks?.length || 0})
           </h2>
           <div className="flex flex-col gap-3">
@@ -73,8 +73,8 @@ export default function Dashboard({
                 onViewChangeAction={updateParams}
               />
             ) : (
-              <div className="text-center py-12 border-2 border-dashed border-zinc-800 rounded-xl">
-                <p className="text-zinc-500 text-sm">
+              <div className="text-center py-12 border-2 border-dashed border-(--border-color) rounded-xl">
+                <p className="text-(--text-secondary) text-sm">
                   No tasks found.
                   {filter !== "all"
                     ? " Try a different filter!"

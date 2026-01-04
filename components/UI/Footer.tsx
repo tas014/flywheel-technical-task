@@ -4,7 +4,7 @@ import Franco from "@/public/Franco.jpg";
 
 export default function Footer() {
   return (
-    <footer className="flex place-content-center bg-[var(--background-soft)] p-8">
+    <footer className="flex place-content-center bg-(--background-soft) p-8">
       <section className="flex gap-15 justify-center items-center">
         <div className="flex items-center justify-center">
           <div className="grid place-content-center">

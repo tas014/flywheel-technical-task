@@ -29,9 +29,9 @@ export default function TaskListTransition({
     >
       {isPending && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-          <div className="flex items-center gap-2 bg-zinc-900 px-4 py-2 rounded-lg border border-zinc-800">
-            <div className="animate-spin h-4 w-4 border-2 border-indigo-500 border-t-transparent rounded-full" />
-            <span className="text-sm text-zinc-400">
+          <div className="flex items-center gap-2 bg-(--bg-tertiary) px-4 py-2 rounded-lg border border-(--border-color)">
+            <div className="animate-spin h-4 w-4 border-2 border-(--button-color) border-t-transparent rounded-full" />
+            <span className="text-sm text-(--text-secondary)">
               {hasSearch
                 ? "Searching..."
                 : hasActiveFilters

@@ -7,7 +7,7 @@ export default function Signup() {
   const [error, formAction, isPending] = useActionState(signUp, null);
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white/5 rounded-lg border border-white/10">
+    <div className="max-w-md mx-auto mt-10 p-6 bg-(--bg-secondary) rounded-lg border border-(--border-color)">
       <h1 className="text-2xl font-bold mb-6">Signup</h1>
       <form action={formAction} className="space-y-4">
         <div>
@@ -19,7 +19,7 @@ export default function Signup() {
             name="email"
             type="email"
             required
-            className="w-full bg-background border border-white/10 rounded px-3 py-2"
+            className="w-full bg-(--bg-tertiary) border border-(--border-color) rounded px-3 py-2"
           />
         </div>
 
@@ -32,7 +32,7 @@ export default function Signup() {
             name="password"
             type="password"
             required
-            className="w-full bg-background border border-white/10 rounded px-3 py-2"
+            className="w-full bg-(--bg-tertiary) border border-(--border-color) rounded px-3 py-2"
           />
         </div>
 
@@ -48,21 +48,21 @@ export default function Signup() {
             name="confirmPassword"
             id="confirmPassword"
             required
-            className="w-full bg-background border border-white/10 rounded px-3 py-2"
+            className="w-full bg-(--bg-tertiary) border border-(--border-color) rounded px-3 py-2"
           />
         </div>
 
         <button
           type="submit"
           disabled={isPending}
-          className="w-full bg-white text-black font-bold py-2 rounded hover:bg-gray-200 disabled:opacity-50"
+          className="w-full bg-(--button-color) text-(--text-primary) font-bold py-2 rounded hover:bg-(--button-highlight) disabled:opacity-50 transition-colors"
         >
           {isPending ? "Creating account..." : "Signup"}
         </button>
 
         {/* 3. Display the error returned from the server action */}
         {error && (
-          <span className="text-red-500 text-sm block mt-2">
+          <span className="text-(--text-error) text-sm block mt-2">
             Error: {error}
           </span>
         )}

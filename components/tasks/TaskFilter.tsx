@@ -31,7 +31,7 @@ export default function TaskFilter({ onFilterChange }: TaskFilterProps) {
       <select
         value={currentFilter}
         onChange={handleFilterChange}
-        className="px-3 py-1.5 rounded-lg text-sm font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all appearance-none cursor-pointer"
+        className="px-3 py-1.5 rounded-lg text-sm font-medium bg-(--bg-tertiary) text-(--text-secondary) hover:bg-(--bg-secondary) transition-all appearance-none cursor-pointer"
       >
         {filters.map((filter) => (
           <option key={filter.value} value={filter.value}>

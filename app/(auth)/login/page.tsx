@@ -42,13 +42,13 @@ export default function Login() {
         <button
           type="submit"
           disabled={isPending}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:bg-gray-500 transition-colors"
+          className="w-full bg-(--button-color) text-(--text-primary) py-2 rounded hover:bg-(--button-highlight) disabled:opacity-50 transition-colors"
         >
           {isPending ? "Logging in..." : "Login"}
         </button>
 
         {error && (
-          <div className="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded">
+          <div className="p-3 text-sm text-(--text-error) bg-(--bg-error)/10 border border-(--text-error)/20 rounded">
             {error}
           </div>
         )}

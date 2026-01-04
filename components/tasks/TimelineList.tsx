@@ -14,12 +14,12 @@ export default function TimelineList({ tasks, dbError }: TimelineListProps) {
     return (
       <div>
         {dbError && (
-          <div className="mb-4 p-4 rounded-lg bg-red-900/20 border border-red-800">
-            <p className="text-red-400 text-sm">Could not load tasks.</p>
+          <div className="mb-4 p-4 rounded-lg bg-(--bg-error)/20 border border-(--text-error)">
+            <p className="text-(--text-error) text-sm">Could not load tasks.</p>
           </div>
         )}
-        <div className="text-center py-12 border-2 border-dashed border-zinc-800 rounded-xl">
-          <p className="text-zinc-500 text-sm">No tasks found. Get started by creating one!</p>
+        <div className="text-center py-12 border-2 border-dashed border-(--border-color) rounded-xl">
+          <p className="text-(--text-secondary) text-sm">No tasks found. Get started by creating one!</p>
         </div>
       </div>
     );
@@ -50,12 +50,12 @@ export default function TimelineList({ tasks, dbError }: TimelineListProps) {
     return (
       <div>
         {dbError && (
-          <div className="mb-4 p-4 rounded-lg bg-red-900/20 border border-red-800">
-            <p className="text-red-400 text-sm">Could not load tasks.</p>
+          <div className="mb-4 p-4 rounded-lg bg-(--bg-error)/20 border border-(--text-error)">
+            <p className="text-(--text-error) text-sm">Could not load tasks.</p>
           </div>
         )}
         <div className="mb-6">
-          <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3 px-4">
+          <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-3 px-4">
             No Deadline ({noDeadlineTasks.length})
           </h3>
           <div className="space-y-2 px-4">
@@ -102,24 +102,24 @@ export default function TimelineList({ tasks, dbError }: TimelineListProps) {
   return (
     <div>
       {dbError && (
-        <div className="mb-4 p-4 rounded-lg bg-red-900/20 border border-red-800">
-          <p className="text-red-400 text-sm">Could not load tasks.</p>
+        <div className="mb-4 p-4 rounded-lg bg-(--bg-error)/20 border border-(--text-error)">
+          <p className="text-(--text-error) text-sm">Could not load tasks.</p>
         </div>
       )}
 
       {/* Timeline Header with Dates */}
       <div className="mb-6">
-        <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3 px-4">
+        <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-3 px-4">
           Timeline
         </h3>
         <div className="flex gap-1 px-4 overflow-x-auto">
           {dateRange.map((date, index) => (
             <div
               key={index}
-              className="flex-shrink-0 w-20 text-center text-xs font-medium text-zinc-500 p-2 bg-zinc-900/50 rounded"
+              className="flex-shrink-0 w-20 text-center text-xs font-medium text-(--text-secondary) p-2 bg-(--bg-tertiary)/50 rounded"
             >
-              <div className="text-zinc-400">{date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div>
-              <div className="text-zinc-600">{date.toLocaleDateString("en-US", { weekday: "narrow" })}</div>
+              <div className="text-(--text-secondary)">{date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div>
+              <div className="text-(--text-tertiary)">{date.toLocaleDateString("en-US", { weekday: "narrow" })}</div>
             </div>
           ))}
         </div>
@@ -152,7 +152,7 @@ export default function TimelineList({ tasks, dbError }: TimelineListProps) {
       {/* No Deadline Section */}
       {noDeadlineTasks.length > 0 && (
         <div className="mt-8">
-          <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3 px-4">
+          <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-3 px-4">
             No Deadline ({noDeadlineTasks.length})
           </h3>
           <div className="space-y-2 px-4">

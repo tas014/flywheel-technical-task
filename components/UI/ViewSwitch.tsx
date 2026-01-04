@@ -25,8 +25,8 @@ export default function ViewSwitch({
           onClick={() => onViewChangeAction({ view: "kanban" })}
           className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
             view === "kanban"
-              ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-              : "bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+              ? "bg-(--bg-secondary) text-(--button-color)"
+              : "bg-(--button-color) hover:bg-(--button-highlight) text-(--text-primary)"
           }`}
         >
           Kanban
@@ -35,8 +35,8 @@ export default function ViewSwitch({
           onClick={() => onViewChangeAction({ view: "timeline" })}
           className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
             view === "timeline"
-              ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-              : "bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+              ? "bg-(--bg-secondary) text-(--button-color)"
+              : "bg-(--button-color) hover:bg-(--button-highlight) text-(--text-primary)"
           }`}
         >
           Timeline

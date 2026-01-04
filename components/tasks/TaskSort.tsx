@@ -42,7 +42,7 @@ export default function TaskSort({ onParamsChange }: TaskSortProps) {
         <select
           value={currentSort}
           onChange={handleSortChange}
-          className="px-3 py-1.5 rounded-lg text-sm font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all appearance-none cursor-pointer"
+          className="px-3 py-1.5 rounded-lg text-sm font-medium bg-(--bg-tertiary) text-(--text-secondary) hover:bg-(--bg-secondary) transition-all appearance-none cursor-pointer"
         >
           {sorts.map((sort) => (
             <option key={sort.value} value={sort.value}>
@@ -55,7 +55,7 @@ export default function TaskSort({ onParamsChange }: TaskSortProps) {
 
       <button
         onClick={handleOrderToggle}
-        className="ml-2 px-2 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all"
+        className="ml-2 px-2 py-1.5 rounded-lg bg-(--button-color) text-(--text-primary) hover:bg-(--button-highlight) transition-all"
         title={`Sort ${currentOrder === "asc" ? "descending" : "ascending"}`}
       >
         {currentOrder === "asc" ? <SortAscending /> : <SortDescending />}
