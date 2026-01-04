@@ -13,12 +13,14 @@ type TaskFormData = {
 type FilterMode = "all" | "complete" | "pending";
 type SortMode = "creation-date" | "due-date" | "urgency" | "none";
 type SortOrder = "asc" | "desc";
+type View = "timeline" | "kanban";
 
 type FetchTasksParams = {
   filter?: FilterMode;
   sort?: SortMode;
   order?: SortOrder;
   search?: string;
+  view?: View;
 };
 
 export type {
@@ -29,5 +31,6 @@ export type {
   FilterMode,
   SortMode,
   SortOrder,
+  View,
   FetchTasksParams,
 };

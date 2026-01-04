@@ -10,6 +10,7 @@ import TaskListTransition from "@/components/tasks/TaskListTransition";
 import type { Task, FetchTasksParams } from "@/app/_lib/types/tasks";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { addURLParams } from "@/app/_lib/fetching";
+import ViewSwitch from "./ViewSwitch";
 
 type PageContentProps = {
   sortedTasks: Task[];
@@ -29,6 +30,10 @@ export default function Dashboard({
 
   // Update ref whenever searchParams changes, but don't use it in dependency array
   searchParamsRef.current = searchParams;
+
+  const currentView = (searchParams.get("view") || "kanban") as
+    | "kanban"
+    | "timeline";
 
   const updateParams = useCallback(
     (updates: FetchTasksParams) => {
@@ -60,13 +65,14 @@ export default function Dashboard({
             taskCount={sortedTasks?.length || 0}
             isPending={isPending}
           >
-            {dbError && <p className="text-red-400">Could not load tasks.</p>}
-
-            {sortedTasks?.map((data: Task) => (
-              <TaskItem key={data.id} data={data} />
-            ))}
-
-            {sortedTasks?.length === 0 && (
+            {sortedTasks?.length !== 0 ? (
+              <ViewSwitch
+                tasks={sortedTasks}
+                dbError={dbError}
+                view={currentView}
+                onViewChangeAction={updateParams}
+              />
+            ) : (
               <div className="text-center py-12 border-2 border-dashed border-zinc-800 rounded-xl">
                 <p className="text-zinc-500 text-sm">
                   No tasks found.

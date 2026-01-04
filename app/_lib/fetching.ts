@@ -4,7 +4,7 @@ import { filterTasks, sortTasks } from "./filter";
 
 export function addURLParams(
   searchParams: URLSearchParams,
-  updates: Partial<FetchTasksParams>
+  updates: FetchTasksParams
 ): string {
   const params = new URLSearchParams(searchParams);
 
@@ -27,6 +27,9 @@ export function addURLParams(
     } else {
       params.delete("search");
     }
+  }
+  if (updates.view !== undefined) {
+    params.set("view", updates.view);
   }
 
   return `?${params.toString()}`;
