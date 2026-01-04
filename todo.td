@@ -1,7 +1,7 @@
-- Check useEffect bloat
+- Check useEffect bloat (DONE)
 - Add createTask and editTask menu
 - Create error handling and not found pages
 - Add success and error messages for CRUD operations
 - Implement login/Signup UI
 - Loading transitions
-- Kanban vs Timeline view
+- Kanban vs Timeline view (DONE)
