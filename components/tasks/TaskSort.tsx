@@ -55,7 +55,7 @@ export default function TaskSort({ onParamsChange }: TaskSortProps) {
 
       <button
         onClick={handleOrderToggle}
-        className="ml-2 px-2 py-1.5 rounded-lg bg-(--button-color) text-(--text-primary) hover:bg-(--button-highlight) hover:text-(--button-color) transition-all cursor-pointer"
+        className="ml-2 px-2 py-1.5 rounded-lg bg-(--button-color) text-(--text-primary) hover:bg-(--button-highlight) transition-all"
         title={`Sort ${currentOrder === "asc" ? "descending" : "ascending"}`}
       >
         {currentOrder === "asc" ? <SortAscending /> : <SortDescending />}

@@ -6,4 +6,3 @@
 - Implement login/Signup UI
 - Loading transitions
 - Kanban vs Timeline view (DONE)
-- Light/Dark Mode switch (DONE)

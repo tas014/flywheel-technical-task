@@ -7,11 +7,9 @@ import type { PostgrestError } from "@supabase/supabase-js";
 type TimelineListProps = {
   tasks: Task[];
   dbError: PostgrestError | null;
-  onError?: (message: string) => void;
-  onTaskUpdate?: (task: Task) => void;
 };
 
-export default function TimelineList({ tasks, dbError, onError, onTaskUpdate }: TimelineListProps) {
+export default function TimelineList({ tasks, dbError }: TimelineListProps) {
   if (tasks.length === 0) {
     return (
       <div>
@@ -62,7 +60,7 @@ export default function TimelineList({ tasks, dbError, onError, onTaskUpdate }: 
           </h3>
           <div className="space-y-2 px-4">
             {noDeadlineTasks.map((task) => (
-              <TaskItem key={task.id} data={task} onError={onError} onTaskUpdate={onTaskUpdate} />
+              <TaskItem key={task.id} data={task} />
             ))}
           </div>
         </div>
@@ -145,7 +143,7 @@ export default function TimelineList({ tasks, dbError, onError, onTaskUpdate }: 
                 width: `${spanWidth}px`,
               }}
             >
-              <TaskItem data={task} onError={onError} onTaskUpdate={onTaskUpdate} />
+              <TaskItem data={task} />
             </div>
           );
         })}
@@ -159,7 +157,7 @@ export default function TimelineList({ tasks, dbError, onError, onTaskUpdate }: 
           </h3>
           <div className="space-y-2 px-4">
             {noDeadlineTasks.map((task) => (
-              <TaskItem key={task.id} data={task} onError={onError} onTaskUpdate={onTaskUpdate} />
+              <TaskItem key={task.id} data={task} />
             ))}
           </div>
         </div>
