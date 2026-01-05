@@ -1,12 +1,19 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { editTask, deleteTask } from "../../app/_lib/actions";
 import type { Task } from "../../app/_lib/types/tasks";
 
-export default function TaskItem({ data }: { data: Task }) {
+interface TaskItemProps {
+  data: Task;
+  onError?: (message: string) => void;
+  onTaskUpdate?: (task: Task) => void;
+}
+
+export default function TaskItem({ data, onError, onTaskUpdate }: TaskItemProps) {
   const { id, title, description, status, due_date } = data;
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
+  const [optimisticStatus, setOptimisticStatus] = useState(status);
 
   // Helper to format the date
   const formattedDate = due_date
@@ -16,21 +23,37 @@ export default function TaskItem({ data }: { data: Task }) {
       })
     : null;
 
+  const handleStatusChange = (newStatus: boolean) => {
+    // Optimistically update UI locally
+    setOptimisticStatus(newStatus);
+
+    // Update parent state immediately for instant transition
+    const updatedTask: Task = { ...data, status: newStatus };
+    onTaskUpdate?.(updatedTask);
+
+    startTransition(async () => {
+      const result = await editTask(id, newStatus);
+      
+      // If there's an error, revert the optimistic update
+      if (result !== "success") {
+        setOptimisticStatus(status);
+        const revertedTask: Task = { ...data, status };
+        onTaskUpdate?.(revertedTask);
+        onError?.(result || "Failed to update task");
+      }
+    });
+  };
+
   return (
-    <div
-      className={`group relative flex items-start gap-4 p-4 rounded-xl border border-(--border-color) bg-(--bg-tertiary)/50 hover:bg-(--bg-tertiary) hover:border-(--border-color) transition-all ${
-        isPending ? "opacity-50 grayscale" : "opacity-100"
-      }`}
-    >
+    <div className="group relative flex items-start gap-4 p-4 rounded-xl border border-(--border-color) bg-(--bg-tertiary)/50 hover:bg-(--bg-tertiary) hover:border-(--border-color) transition-all">
       <div className="flex items-center h-6">
         <input
           type="checkbox"
-          checked={status ?? false}
-          disabled={isPending}
+          checked={optimisticStatus ?? false}
           onChange={(e) => {
-            startTransition(() => editTask(id, e.target.checked));
+            handleStatusChange(e.target.checked);
           }}
-          className="h-5 w-5 rounded border-(--border-color) bg-(--bg-tertiary) text-(--button-color) focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-colors cursor-pointer disabled:cursor-not-allowed"
+          className="h-5 w-5 rounded border-(--border-color) bg-(--bg-tertiary) text-(--button-color) focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-colors cursor-pointer"
         />
       </div>
 
@@ -38,7 +61,7 @@ export default function TaskItem({ data }: { data: Task }) {
         <div className="flex items-center justify-between gap-2">
           <h3
             className={`text-sm font-medium transition-all truncate ${
-              status ? "text-(--text-secondary) line-through" : "text-(--text-primary)"
+              optimisticStatus ? "text-(--text-secondary) line-through" : "text-(--text-primary)"
             }`}
           >
             {title}
@@ -54,7 +77,7 @@ export default function TaskItem({ data }: { data: Task }) {
         {description && (
           <p
             className={`mt-1 text-xs leading-relaxed line-clamp-2 ${
-              status ? "text-(--text-tertiary)" : "text-(--text-secondary)"
+              optimisticStatus ? "text-(--text-tertiary)" : "text-(--text-secondary)"
             }`}
           >
             {description}
@@ -68,8 +91,7 @@ export default function TaskItem({ data }: { data: Task }) {
             startTransition(() => deleteTask(id));
           }
         }}
-        disabled={isPending}
-        className="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 bg-(--button-color) hover:bg-(--button-highlight) rounded transition-all disabled:hidden"
+        className="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 bg-(--button-color) hover:bg-(--button-highlight) rounded transition-all"
         title="Delete task"
       >
         <svg

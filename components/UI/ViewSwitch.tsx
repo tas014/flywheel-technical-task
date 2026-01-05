@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import KanbanList from "@/components/tasks/KanbanList";
 import TimelineList from "@/components/tasks/TimelineList";
 import type { Task, View } from "@/app/_lib/types/tasks";
@@ -10,41 +11,57 @@ type ViewSwitchProps = {
   dbError: PostgrestError | null;
   view: View;
   onViewChangeAction: (updates: { view: View }) => void;
+  onError?: (message: string) => void;
 };
 
 export default function ViewSwitch({
-  tasks,
+  tasks: initialTasks,
   dbError,
   view,
   onViewChangeAction,
+  onError,
 }: ViewSwitchProps) {
+  const [tasks, setTasks] = useState(initialTasks);
+  const [localView, setLocalView] = useState(view);
+
+  const handleTaskUpdate = (updatedTask: Task) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+    );
+  };
+
+  const handleViewChange = (newView: View) => {
+    setLocalView(newView);
+    onViewChangeAction({ view: newView });
+  };
+
   return (
     <div>
       <div className="mb-4 flex gap-2">
         <button
-          onClick={() => onViewChangeAction({ view: "kanban" })}
-          className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
-            view === "kanban"
-              ? "bg-(--bg-secondary) text-(--button-color)"
-              : "bg-(--button-color) hover:bg-(--button-highlight) text-(--text-primary)"
+          onClick={() => handleViewChange("kanban")}
+          className={`px-4 py-2 rounded-lg text-sm transition-colors cursor-pointer ${
+            localView === "kanban"
+              ? "bg-(--button-highlight) text-(--button-color) font-bold"
+              : "bg-(--button-color) hover:bg-(--button-highlight) hover:text-(--button-color) font-medium"
           }`}
         >
           Kanban
         </button>
         <button
-          onClick={() => onViewChangeAction({ view: "timeline" })}
-          className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
-            view === "timeline"
-              ? "bg-(--bg-secondary) text-(--button-color)"
-              : "bg-(--button-color) hover:bg-(--button-highlight) text-(--text-primary)"
+          onClick={() => handleViewChange("timeline")}
+          className={`px-4 py-2 rounded-lg text-sm transition-colors cursor-pointer ${
+            localView === "timeline"
+              ? "bg-(--button-highlight) text-(--button-color) font-bold"
+              : "bg-(--button-color) hover:bg-(--button-highlight) hover:text-(--button-color) font-medium"
           }`}
         >
           Timeline
         </button>
       </div>
 
-      {view === "kanban" && <KanbanList tasks={tasks} dbError={dbError} />}
-      {view === "timeline" && <TimelineList tasks={tasks} dbError={dbError} />}
+      {localView === "kanban" && <KanbanList tasks={tasks} dbError={dbError} onError={onError} onTaskUpdate={handleTaskUpdate} />}
+      {localView === "timeline" && <TimelineList tasks={tasks} dbError={dbError} onError={onError} onTaskUpdate={handleTaskUpdate} />}
     </div>
   );
 }

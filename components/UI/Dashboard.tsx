@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useTransition, useRef } from "react";
+import { useCallback, useTransition, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Filters from "./Filters";
 import TaskListTransition from "@/components/tasks/TaskListTransition";
+import ErrorNotification from "./ErrorNotification";
 import type { Task, FetchTasksParams } from "@/app/_lib/types/tasks";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { addURLParams } from "@/app/_lib/fetching";
@@ -24,6 +25,7 @@ export default function Dashboard({
   const searchParams = useSearchParams();
   const searchParamsRef = useRef(searchParams);
   const [isPending, startTransition] = useTransition();
+  const [operationError, setOperationError] = useState<string | null>(null);
 
   // Update ref whenever searchParams changes, but don't use it in dependency array
   searchParamsRef.current = searchParams;
@@ -54,18 +56,19 @@ export default function Dashboard({
         </div>
 
         <div className="relative">
+          <ViewSwitch
+            tasks={sortedTasks}
+            dbError={dbError}
+            view={currentView}
+            onViewChangeAction={updateParams}
+            onError={setOperationError}
+          />
+
           <TaskListTransition
             taskCount={sortedTasks?.length || 0}
             isPending={isPending}
           >
-            {sortedTasks?.length !== 0 ? (
-              <ViewSwitch
-                tasks={sortedTasks}
-                dbError={dbError}
-                view={currentView}
-                onViewChangeAction={updateParams}
-              />
-            ) : (
+            {sortedTasks?.length === 0 ? (
               <div className="text-center py-12 border-2 border-dashed border-(--border-color) rounded-xl">
                 <p className="text-(--text-secondary) text-sm">
                   No tasks found.
@@ -74,6 +77,8 @@ export default function Dashboard({
                     : " Get started by creating one!"}
                 </p>
               </div>
+            ) : (
+              ""
             )}
           </TaskListTransition>
         </div>
