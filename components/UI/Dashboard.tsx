@@ -2,7 +2,10 @@
 
 import { useCallback, useTransition, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Filters from "./Filters";
+import TaskItem from "@/components/tasks/TaskItem";
+import TaskFilter from "@/components/tasks/TaskFilter";
+import TaskSearchBar from "@/components/tasks/TaskSearchbar";
+import TaskSort from "@/components/tasks/TaskSort";
 import TaskListTransition from "@/components/tasks/TaskListTransition";
 import ErrorNotification from "./ErrorNotification";
 import type { Task, FetchTasksParams } from "@/app/_lib/types/tasks";
@@ -46,13 +49,25 @@ export default function Dashboard({
 
   return (
     <div>
+      {/* Error Notification */}
+      {operationError && (
+        <ErrorNotification
+          errorMessage={operationError}
+          setErrorMessage={setOperationError}
+        />
+      )}
+
       {/* List Section */}
       <section>
         <div className="mb-6">
           <h2 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
             Your Tasks ({sortedTasks?.length || 0})
           </h2>
-          <Filters updateParams={updateParams} />
+          <div className="flex flex-col gap-3">
+            <TaskSearchBar onSearchChange={updateParams} />
+            <TaskFilter onFilterChange={updateParams} />
+            <TaskSort onParamsChange={updateParams} />
+          </div>
         </div>
 
         <div className="relative">
@@ -83,13 +98,6 @@ export default function Dashboard({
           </TaskListTransition>
         </div>
       </section>
-      {/* Error Notification */}
-      {operationError && (
-        <ErrorNotification
-          errorMessage={operationError}
-          setErrorMessage={setOperationError}
-        />
-      )}
     </div>
   );
 }
