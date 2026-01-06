@@ -29,7 +29,7 @@ export default function TaskSort({ onParamsChange }: TaskSortProps) {
   };
 
   const sorts: { label: string; value: SortMode }[] = [
-    { label: "None", value: "none" },
+    { label: "All", value: "none" },
     { label: "Creation Date", value: "creation-date" },
     { label: "Due Date", value: "due-date" },
     { label: "Urgency", value: "urgency" },
@@ -50,13 +50,12 @@ export default function TaskSort({ onParamsChange }: TaskSortProps) {
             </option>
           ))}
         </select>
-        {currentSort !== "none" && <Check />}
       </div>
 
       <button
         onClick={handleOrderToggle}
-        className="ml-2 px-2 py-1.5 rounded-lg bg-(--button-color) text-(--text-primary) hover:bg-(--button-highlight) hover:text-(--button-color) transition-all cursor-pointer"
-        title={`Sort ${currentOrder === "asc" ? "descending" : "ascending"}`}
+        className="ml-2 px-2 py-1.5 rounded-lg bg-(--button-highlight) text-(--text-primary) hover:bg-(--button-color) hover:text-(--button-highlight) transition-all cursor-pointer"
+        title={`Sort ${currentOrder !== "asc" ? "descending" : "ascending"}`}
       >
         {currentOrder !== "asc" ? <SortAscending /> : <SortDescending />}
       </button>

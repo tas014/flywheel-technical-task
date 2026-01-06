@@ -11,7 +11,12 @@ interface TaskItemProps {
   onEditTask: (task: Task) => void;
 }
 
-export default function TaskItem({ data, onError, onTaskUpdate, onEditTask }: TaskItemProps) {
+export default function TaskItem({
+  data,
+  onError,
+  onTaskUpdate,
+  onEditTask,
+}: TaskItemProps) {
   const { id, title, description, status, due_date } = data;
   const [, startTransition] = useTransition();
   const [optimisticStatus, setOptimisticStatus] = useState(status);
@@ -24,6 +29,18 @@ export default function TaskItem({ data, onError, onTaskUpdate, onEditTask }: Ta
       })
     : null;
 
+  const now = Date.now();
+  const dueDateObj = due_date ? new Date(due_date) : null;
+  const isOverdue = Boolean(
+    !optimisticStatus && dueDateObj && dueDateObj.getTime() < now
+  );
+  const isDueSoon = Boolean(
+    !optimisticStatus &&
+      !isOverdue &&
+      dueDateObj &&
+      dueDateObj.getTime() < now + 48 * 60 * 60 * 1000
+  );
+
   const handleStatusChange = (newStatus: boolean) => {
     // Optimistically update UI locally
     setOptimisticStatus(newStatus);
@@ -34,7 +51,7 @@ export default function TaskItem({ data, onError, onTaskUpdate, onEditTask }: Ta
 
     startTransition(async () => {
       const result = await editTask(id, newStatus);
-      
+
       // If there's an error, revert the optimistic update
       if (result !== "success") {
         setOptimisticStatus(status);
@@ -46,13 +63,22 @@ export default function TaskItem({ data, onError, onTaskUpdate, onEditTask }: Ta
   };
 
   return (
-    <div 
+    <div
       onClick={() => {
         onEditTask(data);
       }}
-      className="group relative flex items-start gap-4 p-4 rounded-xl border border-(--border-color) bg-(--bg-tertiary)/50 hover:bg-(--bg-tertiary) hover:border-(--border-color) transition-all cursor-pointer"
+      className={`group relative flex items-start gap-4 p-4 rounded-xl border border-(--border-color) hover:border-(--border-color) transition-all cursor-pointer hover:bg-(--bg-tertiary) ${
+        isOverdue
+          ? "bg-overdue-task"
+          : isDueSoon
+          ? "bg-due-soon-task"
+          : "bg-(--bg-tertiary)/50"
+      }`}
     >
-      <div className="flex items-center h-6" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="flex items-center h-6"
+        onClick={(e) => e.stopPropagation()}
+      >
         <input
           type="checkbox"
           checked={optimisticStatus ?? false}
@@ -67,10 +93,13 @@ export default function TaskItem({ data, onError, onTaskUpdate, onEditTask }: Ta
         <div className="flex items-center justify-between gap-2">
           <h3
             className={`text-sm font-medium transition-all truncate ${
-              optimisticStatus ? "text-(--text-secondary) line-through" : "text-(--text-primary)"
+              optimisticStatus
+                ? "text-(--text-secondary) line-through"
+                : "text-(--text-primary)"
             }`}
           >
-            {title}
+            {title} {isOverdue && "(Overdue)"}
+            {isDueSoon && "(Due soon)"}
           </h3>
 
           {formattedDate && (
@@ -83,7 +112,9 @@ export default function TaskItem({ data, onError, onTaskUpdate, onEditTask }: Ta
         {description && (
           <p
             className={`mt-1 text-xs leading-relaxed line-clamp-2 ${
-              optimisticStatus ? "text-(--text-tertiary)" : "text-(--text-secondary)"
+              optimisticStatus
+                ? "text-(--text-tertiary)"
+                : "text-(--text-primary)"
             }`}
           >
             {description}
@@ -95,7 +126,9 @@ export default function TaskItem({ data, onError, onTaskUpdate, onEditTask }: Ta
         onClick={(e) => {
           e.stopPropagation();
           if (confirm("Are you sure?")) {
-            startTransition(() => { deleteTask(id); });
+            startTransition(() => {
+              deleteTask(id);
+            });
           }
         }}
         className="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 bg-(--button-color) hover:bg-(--button-highlight) rounded transition-all"

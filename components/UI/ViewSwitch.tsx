@@ -42,32 +42,49 @@ export default function ViewSwitch({
   };
 
   return (
-    <div>
-      <div className="mb-4 flex gap-2">
+    <div className="w-full bg-(--bg-translucent) rounded-xl h-full grid grid-rows-[auto_1fr] overflow-hidden">
+      <div className="grid grid-cols-2 divide-x-2 divide-(--bg-task-view) border-b-1 border-(--bg-task-view)">
         <button
           onClick={() => handleViewChange("kanban")}
-          className={`px-4 py-2 rounded-lg text-sm transition-colors cursor-pointer ${
+          className={`px-4 py-2 text-sm transition-colors cursor-pointer text-xl ${
             localView === "kanban"
-              ? "bg-(--button-highlight) text-(--button-color) font-bold"
-              : "bg-(--button-color) hover:bg-(--button-highlight) hover:text-(--button-color) font-medium"
+              ? "bg-(--bg-task-view) text-(--text-tertiary) font-bold"
+              : "hover:bg-(--bg-task-view) hover:text-(--text-tertiary) font-medium"
           }`}
         >
           Kanban
         </button>
         <button
           onClick={() => handleViewChange("timeline")}
-          className={`px-4 py-2 rounded-lg text-sm transition-colors cursor-pointer ${
+          className={`px-4 py-2 text-sm transition-colors cursor-pointer text-xl ${
             localView === "timeline"
-              ? "bg-(--button-highlight) text-(--button-color) font-bold"
-              : "bg-(--button-color) hover:bg-(--button-highlight) hover:text-(--button-color) font-medium"
+              ? "bg-(--bg-task-view) text-(--text-tertiary) font-bold"
+              : "hover:bg-(--bg-task-view) hover:text-(--text-tertiary) font-medium"
           }`}
         >
           Timeline
         </button>
       </div>
-
-      {localView === "kanban" && <KanbanList tasks={tasks} dbError={dbError} onError={onError} onTaskUpdate={handleTaskUpdate} onEditTask={onEditTask} />}
-      {localView === "timeline" && <TimelineList tasks={tasks} dbError={dbError} onError={onError} onTaskUpdate={handleTaskUpdate} onEditTask={onEditTask} />}
+      <div className="p-4 max-w-full min-w-0 overflow-hidden">
+        {localView === "kanban" && (
+          <KanbanList
+            tasks={tasks}
+            dbError={dbError}
+            onError={onError}
+            onTaskUpdate={handleTaskUpdate}
+            onEditTask={onEditTask}
+          />
+        )}
+        {localView === "timeline" && (
+          <TimelineList
+            tasks={tasks}
+            dbError={dbError}
+            onError={onError}
+            onTaskUpdate={handleTaskUpdate}
+            onEditTask={onEditTask}
+          />
+        )}
+      </div>
     </div>
   );
 }

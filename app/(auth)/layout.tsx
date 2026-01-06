@@ -4,11 +4,10 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <main>
-        <section>{children}</section>
-      </main>
-      <footer>Hi! I'm a footer</footer>
-    </div>
+    <main className="h-screen flex justify-end bg-(--login-background)">
+      <section className="w-2/5 flex justify-center items-center bg-(--background)">
+        {children}
+      </section>
+    </main>
   );
 }

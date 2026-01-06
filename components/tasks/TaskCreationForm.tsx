@@ -12,17 +12,14 @@ export default function TaskCreationForm() {
   };
   const [state, formAction, isPending] = useActionState(actionHandler, null);
   return (
-    <div className="mb-12">
-      <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
+    <div className="text-(--text-primary)">
+      <h3 className="text-xl text-center font-semibold uppercase tracking-wider py-5 border-b border-(--border-color) mb-4">
         New Task
       </h3>
 
-      <form
-        action={formAction}
-        className="flex flex-col gap-4 p-4 rounded-xl border border-(--border-color) bg-(--bg-tertiary)/50"
-      >
+      <form action={formAction} className="flex flex-col gap-6 p-4">
         <div className="flex flex-col gap-2">
-          <label htmlFor="title" className="text-sm font-medium text-(--text-secondary)">
+          <label htmlFor="title" className="font-medium">
             Task Title
           </label>
           <input
@@ -32,15 +29,12 @@ export default function TaskCreationForm() {
             disabled={isPending}
             placeholder="Enter task title"
             required
-            className="px-3 py-2 rounded-lg border border-(--border-color) bg-(--bg-tertiary) text-(--text-primary) placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-base px-3 py-2 rounded-sm border border-(--border-color) disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label
-            htmlFor="description"
-            className="text-sm font-medium text-(--text-secondary)"
-          >
+          <label htmlFor="description" className="font-medium">
             Description
           </label>
           <textarea
@@ -49,15 +43,12 @@ export default function TaskCreationForm() {
             disabled={isPending}
             placeholder="Enter task description (optional)"
             rows={3}
-            className="px-3 py-2 rounded-lg border border-(--border-color) bg-(--bg-tertiary) text-(--text-primary) placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed resize-none"
+            className="min-h-[200px] text-base px-3 py-2 rounded-sm border border-(--border-color) disabled:opacity-50 disabled:cursor-not-allowed resize-none"
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label
-            htmlFor="due_date"
-            className="text-sm font-medium text-(--text-secondary)"
-          >
+          <label htmlFor="due_date" className="font-medium">
             Due Date
           </label>
           <input
@@ -65,7 +56,7 @@ export default function TaskCreationForm() {
             type="date"
             name="due_date"
             disabled={isPending}
-            className="px-3 py-2 rounded-lg border border-(--border-color) bg-(--bg-tertiary) text-(--text-primary) focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-base px-3 py-2 rounded-sm border border-(--border-color) disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
@@ -75,9 +66,9 @@ export default function TaskCreationForm() {
             type="checkbox"
             name="status"
             disabled={isPending}
-            className="h-4 w-4 rounded border-(--border-color) bg-(--bg-tertiary) text-(--button-color) focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-colors cursor-pointer disabled:cursor-not-allowed"
+            className="text-base h-4 w-4 rounded border-(--border-color) text-(--button-color) focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-colors cursor-pointer disabled:cursor-not-allowed"
           />
-          <label htmlFor="status" className="text-sm font-medium text-(--text-secondary)">
+          <label htmlFor="status" className="text-base font-medium">
             Mark as completed
           </label>
         </div>
@@ -85,19 +76,14 @@ export default function TaskCreationForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="px-4 py-2 rounded-lg bg-(--button-color) text-(--text-primary) font-medium hover:bg-(--button-highlight) focus:outline-none focus:ring-2 focus:ring-offset-zinc-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="cursor-pointer px-4 py-2 rounded-sm bg-(--button-color) text-(--button-text) font-medium hover:bg-(--button-highlight) hover:text-(--button-color) transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? "Creating..." : "Create Task"}
         </button>
       </form>
       {state && state !== "success" && (
-          <div className="px-3 py-2 rounded-lg bg-(--bg-error)/20 border border-(--text-error) text-(--text-error) text-sm">
-            {state}
-          </div>
-        )}
-      {state === "success" && (
-        <div className="px-3 py-2 rounded-lg bg-(--bg-success)/20 border border-(--text-success) text-(--text-success) text-sm">
-          Task created successfully!
+        <div className="px-3 py-2 rounded-sm bg-(--bg-error)/20 border border-(--text-error) text-(--text-error) text-sm">
+          {state}
         </div>
       )}
     </div>

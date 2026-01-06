@@ -7,12 +7,14 @@ interface Props {
   updateParams: (params: FetchTasksParams) => void;
 }
 
-export default function Filters({updateParams}: Props) {
+export default function Filters({ updateParams }: Props) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="grid gap-3">
       <TaskSearchbar onSearchChange={updateParams} />
-      <TaskFilter onFilterChange={updateParams} />
-      <TaskSort onParamsChange={updateParams} />
+      <div className="flex gap-3">
+        <TaskFilter onFilterChange={updateParams} />
+        <TaskSort onParamsChange={updateParams} />
+      </div>
     </div>
   );
 }

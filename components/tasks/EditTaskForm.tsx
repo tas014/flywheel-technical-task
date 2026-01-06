@@ -13,7 +13,7 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
     prevState: ComponentState, // unused parameter for useActionState compatibility
     formData: FormData
   ) => {
-    return await editTask(task.id, formData) 
+    return await editTask(task.id, formData);
   };
   const [state, formAction, isPending] = useActionState(actionHandler, null);
 
@@ -25,15 +25,14 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
   };
 
   return (
-    <div className="w-[400px]">
-      <h3 className="text-lg font-semibold text-(--text-primary) mb-4">Edit Task</h3>  
+    <div className="text-(--text-primary)">
+      <h3 className="text-xl text-center font-semibold uppercase tracking-wider py-5 border-b border-(--border-color) mb-4">
+        Edit Task
+      </h3>
       <div>
-        <form
-          action={formAction}
-          className="flex flex-col gap-4 p-4 rounded-xl border border-(--border-color) bg-(--bg-tertiary)/50"
-        >
+        <form action={formAction} className="flex flex-col gap-6 p-4">
           <div className="flex flex-col gap-2">
-            <label htmlFor="title" className="text-sm font-medium text-(--text-secondary)">
+            <label htmlFor="title" className="font-medium">
               Task Title
             </label>
             <input
@@ -44,15 +43,12 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
               defaultValue={task.title}
               placeholder="Enter task title"
               required
-              className="px-3 py-2 rounded-lg border border-(--border-color) bg-(--bg-tertiary) text-(--text-primary) placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-base px-3 py-2 rounded-sm border border-(--border-color) disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label
-              htmlFor="description"
-              className="text-sm font-medium text-(--text-secondary)"
-            >
+            <label htmlFor="description" className="font-medium">
               Description
             </label>
             <textarea
@@ -62,12 +58,12 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
               defaultValue={task.description || ""}
               placeholder="Enter task description (optional)"
               rows={3}
-              className="px-3 py-2 rounded-lg border border-(--border-color) bg-(--bg-tertiary) text-(--text-primary) placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed resize-none"
+              className="min-h-[200px] text-base px-3 py-2 rounded-sm border border-(--border-color) disabled:opacity-50 disabled:cursor-not-allowed resize-none"
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="due_date" className="text-sm font-medium text-(--text-secondary)">
+            <label htmlFor="due_date" className="font-medium">
               Due Date
             </label>
             <input
@@ -76,7 +72,7 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
               name="due_date"
               disabled={isPending}
               defaultValue={formatDateForInput(task.due_date)}
-              className="px-3 py-2 rounded-lg border border-(--border-color) bg-(--bg-tertiary) text-(--text-primary) focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-base px-3 py-2 rounded-sm border border-(--border-color) disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -87,9 +83,9 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
               name="status"
               disabled={isPending}
               defaultChecked={task.status}
-              className="h-4 w-4 rounded border-(--border-color) bg-(--bg-tertiary) text-(--button-color) focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-colors cursor-pointer disabled:cursor-not-allowed"
+              className="text-base h-4 w-4 rounded border-(--border-color) text-(--button-color) focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-colors cursor-pointer disabled:cursor-not-allowed"
             />
-            <label htmlFor="status" className="text-sm font-medium text-(--text-secondary)">
+            <label htmlFor="status" className="text-base font-medium">
               Mark as completed
             </label>
           </div>
@@ -97,18 +93,18 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
           <button
             type="submit"
             disabled={isPending}
-            className="px-4 py-2 rounded-lg bg-(--button-color) text-(--text-primary) font-medium hover:bg-(--button-highlight) focus:outline-none focus:ring-2 focus:ring-offset-zinc-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="cursor-pointer px-4 py-2 rounded-sm bg-(--button-color) text-(--button-text) font-medium hover:bg-(--button-highlight) hover:text-(--button-color) transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isPending ? "Saving..." : "Save Changes"}
           </button>
         </form>
         {state && state !== "success" && (
-          <div className="px-3 py-2 rounded-lg bg-(--bg-error)/20 border border-(--text-error) text-(--text-error) text-sm">
+          <div className="px-3 py-2 rounded-sm bg-(--bg-error)/20 border border-(--text-error) text-(--text-error) text-sm">
             {state}
           </div>
         )}
         {state === "success" && (
-          <div className="px-3 py-2 rounded-lg bg-(--bg-success)/20 border border-(--text-success) text-(--text-success) text-sm">
+          <div className="px-3 py-2 rounded-sm bg-(--bg-success)/20 border border-(--text-success) text-(--text-success) text-sm">
             Task updated successfully!
           </div>
         )}

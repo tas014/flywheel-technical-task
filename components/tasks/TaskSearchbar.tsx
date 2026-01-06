@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import type { FetchTasksParams } from "@/app/_lib/types/tasks";
+import Search from "../UI/Icons/Search";
 
 interface TaskSearchBarProps {
   onSearchChange: (updates: FetchTasksParams) => void;
@@ -28,12 +29,13 @@ export default function TaskSearchBar({ onSearchChange }: TaskSearchBarProps) {
   }, [term, onSearchChange]);
 
   return (
-    <div className="w-2xl">
+    <div className="w-2xl flex items-center gap-2 bg-(--bg-tertiary) border-(--border-color) rounded-lg pl-4 py-1 transition-all">
+      <Search />
       <input
         value={term}
         onChange={(e) => setTerm(e.target.value)}
         placeholder="Search tasks..."
-        className="w-full bg-(--bg-tertiary) border-(--border-color) rounded-lg px-4 py-2 transition-all"
+        className="border-none w-full :focus:border-none :focus:outline-none text-base"
       />
     </div>
   );

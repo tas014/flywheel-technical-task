@@ -1,6 +1,8 @@
 "use client";
 
 import TaskItem from "./TaskItem";
+import TimelineGridHead from "./TimelineGridHead";
+import TimelineGridBody from "./TimelineGridBody";
 import type { Task } from "@/app/_lib/types/tasks";
 import type { PostgrestError } from "@supabase/supabase-js";
 
@@ -12,27 +14,18 @@ type TimelineListProps = {
   onEditTask: (task: Task) => void;
 };
 
-export default function TimelineList({ tasks, dbError, onError, onTaskUpdate, onEditTask }: TimelineListProps) {
-  if (tasks.length === 0) {
-    return (
-      <div>
-        {dbError && (
-          <div className="mb-4 p-4 rounded-lg bg-(--bg-error)/20 border border-(--text-error)">
-            <p className="text-(--text-error) text-sm">Could not load tasks.</p>
-          </div>
-        )}
-        <div className="text-center py-12 border-2 border-dashed border-(--border-color) rounded-xl">
-          <p className="text-(--text-secondary) text-sm">No tasks found. Get started by creating one!</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Separate tasks by deadline status
+export default function TimelineList({
+  tasks,
+  dbError,
+  onError,
+  onTaskUpdate,
+  onEditTask,
+}: TimelineListProps) {
+  const hasTasks = tasks.length > 0;
   const noDeadlineTasks = tasks.filter((task) => !task.due_date);
   const tasksWithDeadlines = tasks.filter((task) => task.due_date);
 
-  // Get date range from earliest created_at to latest due_date
+  // Get date range logic
   let minDate: Date | null = null;
   let maxDate: Date | null = null;
 
@@ -40,157 +33,118 @@ export default function TimelineList({ tasks, dbError, onError, onTaskUpdate, on
     const createdDate = new Date(task.created_at);
     const dueDate = new Date(task.due_date!);
 
-    if (!minDate || createdDate < minDate) {
-      minDate = createdDate;
+    if (!minDate || createdDate < minDate) minDate = createdDate;
+    if (!maxDate || dueDate > maxDate) maxDate = dueDate;
+  }
+
+  // Ensure minimum range
+  if (minDate) {
+    const minRequiredEndDate = new Date(minDate);
+    minRequiredEndDate.setDate(minRequiredEndDate.getDate() + 9);
+    if (maxDate && maxDate < minRequiredEndDate) {
+      maxDate = minRequiredEndDate;
     }
-    if (!maxDate || dueDate > maxDate) {
-      maxDate = dueDate;
-    }
   }
 
-  if (!minDate || !maxDate) {
-    // Only tasks without deadlines
-    return (
-      <div>
-        {dbError && (
-          <div className="mb-4 p-4 rounded-lg bg-(--bg-error)/20 border border-(--text-error)">
-            <p className="text-(--text-error) text-sm">Could not load tasks.</p>
-          </div>
-        )}
-        <div className="mb-6">
-          <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-3 px-4">
-            No Deadline ({noDeadlineTasks.length})
-          </h3>
-          <div className="space-y-2 px-4">
-            {noDeadlineTasks.map((task) => (
-              <TaskItem key={task.id} data={task} onError={onError} onTaskUpdate={onTaskUpdate} onEditTask={onEditTask} />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Ensure at least 10 dates range provided
-  const minRequiredEndDate = new Date(minDate);
-  minRequiredEndDate.setDate(minRequiredEndDate.getDate() + 9);
-  
-  if (maxDate < minRequiredEndDate) {
-    maxDate = minRequiredEndDate;
-  }
-
-  // Generate all dates in range (inclusive)
+  // Generate date range
   const dateRange: Date[] = [];
-  const currentDate = new Date(minDate);
-  currentDate.setHours(0, 0, 0, 0);
-  maxDate.setHours(0, 0, 0, 0);
+  if (minDate && maxDate) {
+    const currentDate = new Date(minDate);
+    currentDate.setHours(0, 0, 0, 0);
+    maxDate.setHours(0, 0, 0, 0);
 
-  while (currentDate <= maxDate) {
-    dateRange.push(new Date(currentDate));
-    currentDate.setDate(currentDate.getDate() + 1);
+    while (currentDate <= maxDate) {
+      dateRange.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
   }
 
-  // Map each task to columns it occupies
-  const taskDateRanges = new Map<number, { startIndex: number; endIndex: number }>();
-  tasksWithDeadlines.forEach((task) => {
-    const createdDate = new Date(task.created_at);
-    createdDate.setHours(0, 0, 0, 0);
-    const dueDate = new Date(task.due_date!);
-    dueDate.setHours(0, 0, 0, 0);
+  // Map tasks to columns
+  const taskDateRanges = new Map<
+    number,
+    { startIndex: number; endIndex: number }
+  >();
+  if (dateRange.length > 0) {
+    tasksWithDeadlines.forEach((task) => {
+      const createdDate = new Date(task.created_at);
+      createdDate.setHours(0, 0, 0, 0);
+      const dueDate = new Date(task.due_date!);
+      dueDate.setHours(0, 0, 0, 0);
 
-    const startIndex = dateRange.findIndex(
-      (d) => d.getTime() === createdDate.getTime()
-    );
-    const endIndex = dateRange.findIndex(
-      (d) => d.getTime() === dueDate.getTime()
-    );
+      const startIndex = dateRange.findIndex(
+        (d) => d.getTime() === createdDate.getTime()
+      );
+      const endIndex = dateRange.findIndex(
+        (d) => d.getTime() === dueDate.getTime()
+      );
 
-    if (startIndex !== -1 && endIndex !== -1) {
-      taskDateRanges.set(task.id, { startIndex, endIndex });
-    }
-  });
+      if (startIndex !== -1 && endIndex !== -1) {
+        taskDateRanges.set(task.id, { startIndex, endIndex });
+      }
+    });
+  }
+
+  const showTimeline = dateRange.length > 0 && tasksWithDeadlines.length > 0;
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       {dbError && (
         <div className="mb-4 p-4 rounded-lg bg-(--bg-error)/20 border border-(--text-error)">
           <p className="text-(--text-error) text-sm">Could not load tasks.</p>
         </div>
       )}
 
-      {/* Unified Timeline Container */}
-      <div className="mb-6 overflow-x-auto pb-4">
-        <div 
-          className="relative px-4 [--col-width:20%] landscape:[--col-width:12.5%] md:[--col-width:10%]"
-          style={{ width: `max(100%, calc(${dateRange.length} * var(--col-width)))` }}
-        >
-          {/* Vertical Grid Lines */}
-          <div className="absolute inset-0 px-4 pointer-events-none flex">
-            {dateRange.map((_, index) => (
-              <div 
-                key={index} 
-                className={`flex-1 border-r border-dashed border-(--border-tertiary)/30 ${index === dateRange.length - 1 ? 'border-r-0' : ''}`} 
-              />
-            ))}
-          </div>
-
-          {/* Timeline Header with Dates */}
-          <h3 className="sticky left-0 text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-3 bg-(--bg-primary)">
-            Timeline
-          </h3>
-          
-          <div className="flex mb-2 relative z-10">
-            {dateRange.map((date, index) => (
+      {!hasTasks ? (
+        <div className="h-full text-center py-12 border-2 border-dashed border-(--border-color) rounded-xl">
+          <p className="text-(--text-secondary) text-sm">
+            No tasks found. Get started by creating one!
+          </p>
+        </div>
+      ) : (
+        <>
+          {showTimeline && (
+            <div className="mb-6 overflow-auto pb-4 w-full flex-1 min-h-0">
               <div
-                key={index}
-                className="flex-1 text-center text-xs font-medium text-(--text-secondary) p-2 mx-1 bg-(--bg-tertiary)/50 rounded"
+                className="grid gap-y-2 relative w-[max-content] min-w-[max-content] min-h-full"
+                style={{
+                  gridTemplateColumns: `repeat(${dateRange.length}, minmax(140px, 20vw))`,
+                  gridTemplateRows: `max-content repeat(${tasksWithDeadlines.length}, max-content) 1fr`,
+                  backgroundImage:
+                    "linear-gradient(to right, var(--foreground) 1px, transparent 1px)",
+                  backgroundSize: `calc(100% / ${dateRange.length}) 100%`,
+                }}
               >
-                <div className="text-(--text-secondary)">{date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div>
-                <div className="text-(--text-tertiary)">{date.toLocaleDateString("en-US", { weekday: "narrow" })}</div>
+                <TimelineGridHead dateRange={dateRange} />
+                <TimelineGridBody
+                  tasks={tasksWithDeadlines}
+                  taskDateRanges={taskDateRanges}
+                  onError={onError}
+                  onTaskUpdate={onTaskUpdate}
+                  onEditTask={onEditTask}
+                />
               </div>
-            ))}
-          </div>
+            </div>
+          )}
 
-          {/* Tasks positioned in timeline */}
-          <div className="space-y-2 relative z-10">
-            {tasksWithDeadlines.map((task) => {
-              const range = taskDateRanges.get(task.id);
-              if (!range) return null;
-
-              const singleColumnPercent = 100 / dateRange.length;
-              const startOffset = range.startIndex * singleColumnPercent;
-              const spanWidth = (range.endIndex - range.startIndex + 1) * singleColumnPercent;
-
-              return (
-                <div
-                  key={task.id}
-                  style={{
-                    marginLeft: `${startOffset}%`,
-                    width: `${spanWidth}%`,
-                    paddingLeft: '0.25rem', // gap compensation (mx-1 is 0.25rem)
-                    paddingRight: '0.25rem'
-                  }}
-                >
-                  <TaskItem data={task} onError={onError} onTaskUpdate={onTaskUpdate} onEditTask={onEditTask} />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* No Deadline Section */}
-      {noDeadlineTasks.length > 0 && (
-        <div className="mt-8">
-          <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-3 px-4">
-            No Deadline ({noDeadlineTasks.length})
-          </h3>
-          <div className="space-y-2 px-4">
-            {noDeadlineTasks.map((task) => (
-              <TaskItem key={task.id} data={task} onError={onError} onTaskUpdate={onTaskUpdate} onEditTask={onEditTask} />
-            ))}
-          </div>
-        </div>
+          {noDeadlineTasks.length > 0 && (
+            <div className={showTimeline ? "mt-8" : "mb-6"}>
+              <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-3 px-4">
+                No Deadline ({noDeadlineTasks.length})
+              </h3>
+              <div className="space-y-2 px-4">
+                {noDeadlineTasks.map((task) => (
+                  <TaskItem
+                    key={task.id}
+                    data={task}
+                    onError={onError}
+                    onTaskUpdate={onTaskUpdate}
+                    onEditTask={onEditTask}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

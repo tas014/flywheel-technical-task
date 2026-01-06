@@ -4,6 +4,7 @@ import { useState } from "react";
 import TaskItem from "./TaskItem";
 import type { Task } from "@/app/_lib/types/tasks";
 import type { PostgrestError } from "@supabase/supabase-js";
+import Swap from "../UI/Icons/Swap";
 
 type KanbanListProps = {
   tasks: Task[];
@@ -13,7 +14,13 @@ type KanbanListProps = {
   onEditTask: (task: Task) => void;
 };
 
-export default function KanbanList({ tasks, dbError, onError, onTaskUpdate, onEditTask }: KanbanListProps) {
+export default function KanbanList({
+  tasks,
+  dbError,
+  onError,
+  onTaskUpdate,
+  onEditTask,
+}: KanbanListProps) {
   const [swapped, setSwapped] = useState(false);
 
   const pendingTasks = tasks.filter((task) => !task.status);
@@ -35,39 +42,44 @@ export default function KanbanList({ tasks, dbError, onError, onTaskUpdate, onEd
       </h3>
       <div className="space-y-2">
         {dbError && label === "Pending" && (
-          <p className="text-(--text-error) text-sm">Could not load tasks.</p>
+          <p className="text-sm">Could not load tasks.</p>
         )}
         {columnTasks.length === 0 ? (
           <div className="text-center py-8 border-2 border-dashed border-(--border-color) rounded-lg">
-            <p className="text-(--text-tertiary) text-sm">{emptyMessage}</p>
+            <p className="text-sm">{emptyMessage}</p>
           </div>
         ) : (
-          columnTasks.map((task) => <TaskItem key={task.id} data={task} onError={onError} onTaskUpdate={onTaskUpdate} onEditTask={onEditTask} />)
+          columnTasks.map((task) => (
+            <TaskItem
+              key={task.id}
+              data={task}
+              onError={onError}
+              onTaskUpdate={onTaskUpdate}
+              onEditTask={onEditTask}
+            />
+          ))
         )}
       </div>
     </div>
   );
 
   return (
-    <div>
-      <div className="mb-4 flex justify-end">
-        <button
-          onClick={() => setSwapped(!swapped)}
-          className="px-4 py-2 rounded-lg bg-(--button-color) hover:bg-(--button-highlight) text-(--text-primary) text-sm font-medium transition-colors"
-          title="Swap columns"
-        >
-          Swap Columns
-        </button>
-      </div>
-
-      <div className="flex gap-4">
+    <div className="h-full">
+      <div className="h-full grid grid-cols-[1fr_auto_1fr] gap-4 text-(--text-primary)">
         {renderColumn(
           firstColumn,
           firstLabel,
-          firstLabel === "Pending"
-            ? "No pending tasks!"
-            : "No completed tasks!"
+          firstLabel === "Pending" ? "No pending tasks!" : "No completed tasks!"
         )}
+        <div className="flex items-center justify-center">
+          <button
+            onClick={() => setSwapped(!swapped)}
+            className="cursor-pointer size-fit"
+            title="Swap columns"
+          >
+            <Swap />
+          </button>
+        </div>
         {renderColumn(
           secondColumn,
           secondLabel,

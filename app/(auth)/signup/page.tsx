@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { signUp } from "../../_lib/actions";
 import { useActionState } from "react";
 
@@ -7,11 +8,13 @@ export default function Signup() {
   const [error, formAction, isPending] = useActionState(signUp, null);
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-(--bg-secondary) rounded-lg border border-(--border-color)">
-      <h1 className="text-2xl font-bold mb-6">Signup</h1>
-      <form action={formAction} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="email">
+    <div className="max-w-lg mx-auto p-6 bg-(--bg-translucent) rounded-lg text-(--text-primary) size-fit w-full">
+      <h1 className="text-xl text-center font-semibold uppercase tracking-wider py-5 border-b border-(--border-color) mb-4">
+        Signup
+      </h1>
+      <form action={formAction} className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <label className="font-medium text-lg" htmlFor="email">
             Email
           </label>
           <input
@@ -19,12 +22,12 @@ export default function Signup() {
             name="email"
             type="email"
             required
-            className="w-full bg-(--bg-tertiary) border border-(--border-color) rounded px-3 py-2"
+            className="text-base px-3 py-2 rounded-sm border border-(--border-color) disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1" htmlFor="password">
+        <div className="flex flex-col gap-2">
+          <label className="font-medium text-lg" htmlFor="password">
             Password
           </label>
           <input
@@ -32,15 +35,12 @@ export default function Signup() {
             name="password"
             type="password"
             required
-            className="w-full bg-(--bg-tertiary) border border-(--border-color) rounded px-3 py-2"
+            className="text-base px-3 py-2 rounded-sm border border-(--border-color) disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
-        <div>
-          <label
-            className="block text-sm font-medium mb-1"
-            htmlFor="confirmPassword"
-          >
+        <div className="flex flex-col gap-2">
+          <label className="font-medium text-lg" htmlFor="confirmPassword">
             Confirm password
           </label>
           <input
@@ -48,23 +48,27 @@ export default function Signup() {
             name="confirmPassword"
             id="confirmPassword"
             required
-            className="w-full bg-(--bg-tertiary) border border-(--border-color) rounded px-3 py-2"
+            className="text-base px-3 py-2 rounded-sm border border-(--border-color) disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </div>
 
         <button
           type="submit"
           disabled={isPending}
-          className="w-full bg-(--button-color) text-(--text-primary) font-bold py-2 rounded hover:bg-(--button-highlight) disabled:opacity-50 transition-colors"
+          className="cursor-pointer w-full px-4 py-2 rounded-sm bg-(--button-color) text-(--button-text) font-medium hover:bg-(--button-highlight) hover:text-(--button-color) transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? "Creating account..." : "Signup"}
         </button>
+        <Link href="/login" className="text-lg text-center">
+          Already have an account?{" "}
+          <span className="font-medium underline">Login</span>
+        </Link>
 
         {/* 3. Display the error returned from the server action */}
         {error && (
-          <span className="text-(--text-error) text-sm block mt-2">
+          <div className="px-3 py-2 rounded-sm bg-(--bg-error)/20 border border-(--text-error) text-(--text-error) text-sm">
             Error: {error}
-          </span>
+          </div>
         )}
       </form>
     </div>

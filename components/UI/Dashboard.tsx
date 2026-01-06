@@ -61,61 +61,63 @@ export default function Dashboard({
 
   return (
     <div>
-          {/* Error Notification */}
-          {operationError && (
-            <ErrorNotification
-              errorMessage={operationError}
-              setErrorMessage={setOperationError}
-            />
-          )}
-    
-          {/* List Section */}
-          <section>
-            <div className="mb-6">
-              <h2 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
-                Your Tasks ({sortedTasks?.length || 0})
-              </h2>
-              <div>
-                <button onClick={() => setIsModalOpen(true)}>+</button>
-                <Filters updateParams={updateParams} />
-              </div>
-            </div>
-    
-            <div className="relative">
-              <ViewSwitch
-                tasks={sortedTasks}
-                dbError={dbError}
-                view={currentView}
-                onViewChangeAction={updateParams}
-                onError={setOperationError}
-                onEditTask={handleEditTask}
-              />
-    
-              <TaskListTransition
-                taskCount={sortedTasks?.length || 0}
-                isPending={isPending}
-              >
-                {sortedTasks?.length === 0 ? (
-                  <NoTaskFound filter={filter} />
-                ) : (
-                  ""
-                )}
-              </TaskListTransition>
-            </div>
-          </section>
-    
-          {/* Edit Task Modal */}
-          {isModalOpen && taskToEdit && (
-            <Modal onClose={handleCloseModal}>
-              <EditTaskForm task={taskToEdit} />
-            </Modal>
-          )}
-          {/* Create Task Modal */}
-          {isModalOpen && !taskToEdit && (
-            <Modal onClose={handleCloseModal}>
-              <TaskCreationForm />
-            </Modal>
-          )}
+      {/* Error Notification */}
+      {operationError && (
+        <ErrorNotification
+          errorMessage={operationError}
+          setErrorMessage={setOperationError}
+        />
+      )}
+
+      {/* List Section */}
+      <section>
+        <div className="mb-6">
+          <h2 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
+            Your Tasks ({sortedTasks?.length || 0})
+          </h2>
+          <div className="flex gap-3 justify-between">
+            <Filters updateParams={updateParams} />
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="w-12 h-12 rounded-full bg-(--button-highlight) text-(--text-tertiary) hover:bg-(--button-color) hover:text-(--button-highlight) transition-all cursor-pointer"
+              title="Create new task"
+            >
+              +
+            </button>
+          </div>
         </div>
+
+        <div className="relative flex justify-center h-[70vh] w-full max-w-full overflow-hidden">
+          <ViewSwitch
+            tasks={sortedTasks}
+            dbError={dbError}
+            view={currentView}
+            onViewChangeAction={updateParams}
+            onError={setOperationError}
+            onEditTask={handleEditTask}
+          />
+
+          <TaskListTransition
+            taskCount={sortedTasks?.length || 0}
+            isPending={isPending}
+          >
+            {sortedTasks?.length === 0 ? <NoTaskFound filter={filter} /> : ""}
+          </TaskListTransition>
+        </div>
+      </section>
+
+      {/* Edit Task Modal */}
+      {isModalOpen && taskToEdit && (
+        <Modal onClose={handleCloseModal}>
+          <EditTaskForm task={taskToEdit} />
+        </Modal>
+      )}
+      {/* Create Task Modal */}
+      {isModalOpen && !taskToEdit && (
+        <Modal onClose={handleCloseModal}>
+          <TaskCreationForm />
+        </Modal>
+      )}
+    </div>
   );
 }
