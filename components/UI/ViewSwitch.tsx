@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import KanbanList from "@/components/tasks/KanbanList";
 import TimelineList from "@/components/tasks/TimelineList";
 import type { Task, View } from "@/app/_lib/types/tasks";
@@ -12,6 +12,7 @@ type ViewSwitchProps = {
   view: View;
   onViewChangeAction: (updates: { view: View }) => void;
   onError?: (message: string) => void;
+  onEditTask: (task: Task) => void;
 };
 
 export default function ViewSwitch({
@@ -20,9 +21,14 @@ export default function ViewSwitch({
   view,
   onViewChangeAction,
   onError,
+  onEditTask,
 }: ViewSwitchProps) {
   const [tasks, setTasks] = useState(initialTasks);
   const [localView, setLocalView] = useState(view);
+
+  useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
 
   const handleTaskUpdate = (updatedTask: Task) => {
     setTasks((prevTasks) =>
@@ -60,8 +66,8 @@ export default function ViewSwitch({
         </button>
       </div>
 
-      {localView === "kanban" && <KanbanList tasks={tasks} dbError={dbError} onError={onError} onTaskUpdate={handleTaskUpdate} />}
-      {localView === "timeline" && <TimelineList tasks={tasks} dbError={dbError} onError={onError} onTaskUpdate={handleTaskUpdate} />}
+      {localView === "kanban" && <KanbanList tasks={tasks} dbError={dbError} onError={onError} onTaskUpdate={handleTaskUpdate} onEditTask={onEditTask} />}
+      {localView === "timeline" && <TimelineList tasks={tasks} dbError={dbError} onError={onError} onTaskUpdate={handleTaskUpdate} onEditTask={onEditTask} />}
     </div>
   );
 }

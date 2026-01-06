@@ -10,9 +10,10 @@ type KanbanListProps = {
   dbError: PostgrestError | null;
   onError?: (message: string) => void;
   onTaskUpdate?: (task: Task) => void;
+  onEditTask: (task: Task) => void;
 };
 
-export default function KanbanList({ tasks, dbError, onError, onTaskUpdate }: KanbanListProps) {
+export default function KanbanList({ tasks, dbError, onError, onTaskUpdate, onEditTask }: KanbanListProps) {
   const [swapped, setSwapped] = useState(false);
 
   const pendingTasks = tasks.filter((task) => !task.status);
@@ -41,7 +42,7 @@ export default function KanbanList({ tasks, dbError, onError, onTaskUpdate }: Ka
             <p className="text-(--text-tertiary) text-sm">{emptyMessage}</p>
           </div>
         ) : (
-          columnTasks.map((task) => <TaskItem key={task.id} data={task} onError={onError} onTaskUpdate={onTaskUpdate} />)
+          columnTasks.map((task) => <TaskItem key={task.id} data={task} onError={onError} onTaskUpdate={onTaskUpdate} onEditTask={onEditTask} />)
         )}
       </div>
     </div>

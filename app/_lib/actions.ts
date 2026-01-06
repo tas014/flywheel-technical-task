@@ -152,7 +152,7 @@ function _getTaskFormData(formData: FormData): TaskFormData {
     due_date: due_date
       ? new Date(due_date.toString() + "T23:59:59").toISOString()
       : null,
-    status: status ? status === "true" : false,
+    status: status ? status === "on" : false,
   };
 }
 

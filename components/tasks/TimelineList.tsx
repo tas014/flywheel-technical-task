@@ -9,9 +9,10 @@ type TimelineListProps = {
   dbError: PostgrestError | null;
   onError?: (message: string) => void;
   onTaskUpdate?: (task: Task) => void;
+  onEditTask: (task: Task) => void;
 };
 
-export default function TimelineList({ tasks, dbError, onError, onTaskUpdate }: TimelineListProps) {
+export default function TimelineList({ tasks, dbError, onError, onTaskUpdate, onEditTask }: TimelineListProps) {
   if (tasks.length === 0) {
     return (
       <div>
@@ -35,7 +36,7 @@ export default function TimelineList({ tasks, dbError, onError, onTaskUpdate }: 
   let minDate: Date | null = null;
   let maxDate: Date | null = null;
 
-  tasksWithDeadlines.forEach((task) => {
+  for (const task of tasksWithDeadlines) {
     const createdDate = new Date(task.created_at);
     const dueDate = new Date(task.due_date!);
 
@@ -45,7 +46,7 @@ export default function TimelineList({ tasks, dbError, onError, onTaskUpdate }: 
     if (!maxDate || dueDate > maxDate) {
       maxDate = dueDate;
     }
-  });
+  }
 
   if (!minDate || !maxDate) {
     // Only tasks without deadlines
@@ -62,12 +63,20 @@ export default function TimelineList({ tasks, dbError, onError, onTaskUpdate }: 
           </h3>
           <div className="space-y-2 px-4">
             {noDeadlineTasks.map((task) => (
-              <TaskItem key={task.id} data={task} onError={onError} onTaskUpdate={onTaskUpdate} />
+              <TaskItem key={task.id} data={task} onError={onError} onTaskUpdate={onTaskUpdate} onEditTask={onEditTask} />
             ))}
           </div>
         </div>
       </div>
     );
+  }
+
+  // Ensure at least 10 dates range provided
+  const minRequiredEndDate = new Date(minDate);
+  minRequiredEndDate.setDate(minRequiredEndDate.getDate() + 9);
+  
+  if (maxDate < minRequiredEndDate) {
+    maxDate = minRequiredEndDate;
   }
 
   // Generate all dates in range (inclusive)
@@ -109,46 +118,65 @@ export default function TimelineList({ tasks, dbError, onError, onTaskUpdate }: 
         </div>
       )}
 
-      {/* Timeline Header with Dates */}
-      <div className="mb-6">
-        <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-3 px-4">
-          Timeline
-        </h3>
-        <div className="flex gap-1 px-4 overflow-x-auto">
-          {dateRange.map((date, index) => (
-            <div
-              key={index}
-              className="flex-shrink-0 w-20 text-center text-xs font-medium text-(--text-secondary) p-2 bg-(--bg-tertiary)/50 rounded"
-            >
-              <div className="text-(--text-secondary)">{date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div>
-              <div className="text-(--text-tertiary)">{date.toLocaleDateString("en-US", { weekday: "narrow" })}</div>
-            </div>
-          ))}
+      {/* Unified Timeline Container */}
+      <div className="mb-6 overflow-x-auto pb-4">
+        <div 
+          className="relative px-4 [--col-width:20%] landscape:[--col-width:12.5%] md:[--col-width:10%]"
+          style={{ width: `max(100%, calc(${dateRange.length} * var(--col-width)))` }}
+        >
+          {/* Vertical Grid Lines */}
+          <div className="absolute inset-0 px-4 pointer-events-none flex">
+            {dateRange.map((_, index) => (
+              <div 
+                key={index} 
+                className={`flex-1 border-r border-dashed border-(--border-tertiary)/30 ${index === dateRange.length - 1 ? 'border-r-0' : ''}`} 
+              />
+            ))}
+          </div>
+
+          {/* Timeline Header with Dates */}
+          <h3 className="sticky left-0 text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-3 bg-(--bg-primary)">
+            Timeline
+          </h3>
+          
+          <div className="flex mb-2 relative z-10">
+            {dateRange.map((date, index) => (
+              <div
+                key={index}
+                className="flex-1 text-center text-xs font-medium text-(--text-secondary) p-2 mx-1 bg-(--bg-tertiary)/50 rounded"
+              >
+                <div className="text-(--text-secondary)">{date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</div>
+                <div className="text-(--text-tertiary)">{date.toLocaleDateString("en-US", { weekday: "narrow" })}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Tasks positioned in timeline */}
+          <div className="space-y-2 relative z-10">
+            {tasksWithDeadlines.map((task) => {
+              const range = taskDateRanges.get(task.id);
+              if (!range) return null;
+
+              const singleColumnPercent = 100 / dateRange.length;
+              const startOffset = range.startIndex * singleColumnPercent;
+              const spanWidth = (range.endIndex - range.startIndex + 1) * singleColumnPercent;
+
+              return (
+                <div
+                  key={task.id}
+                  style={{
+                    marginLeft: `${startOffset}%`,
+                    width: `${spanWidth}%`,
+                    paddingLeft: '0.25rem', // gap compensation (mx-1 is 0.25rem)
+                    paddingRight: '0.25rem'
+                  }}
+                >
+                  <TaskItem data={task} onError={onError} onTaskUpdate={onTaskUpdate} onEditTask={onEditTask} />
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
-
-      {/* Tasks positioned in timeline */}
-      <div className="px-4 space-y-2">
-        {tasksWithDeadlines.map((task) => {
-          const range = taskDateRanges.get(task.id);
-          if (!range) return null;
-
-          const columnWidth = 80 + 4; // w-20 (80px) + gap-1 (4px)
-          const startOffset = range.startIndex * columnWidth;
-          const spanWidth = (range.endIndex - range.startIndex + 1) * columnWidth - 4;
-
-          return (
-            <div
-              key={task.id}
-              style={{
-                marginLeft: `calc(1rem + ${startOffset}px)`,
-                width: `${spanWidth}px`,
-              }}
-            >
-              <TaskItem data={task} onError={onError} onTaskUpdate={onTaskUpdate} />
-            </div>
-          );
-        })}
       </div>
 
       {/* No Deadline Section */}
@@ -159,7 +187,7 @@ export default function TimelineList({ tasks, dbError, onError, onTaskUpdate }: 
           </h3>
           <div className="space-y-2 px-4">
             {noDeadlineTasks.map((task) => (
-              <TaskItem key={task.id} data={task} onError={onError} onTaskUpdate={onTaskUpdate} />
+              <TaskItem key={task.id} data={task} onError={onError} onTaskUpdate={onTaskUpdate} onEditTask={onEditTask} />
             ))}
           </div>
         </div>

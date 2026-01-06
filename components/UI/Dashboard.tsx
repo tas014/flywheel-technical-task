@@ -2,16 +2,17 @@
 
 import { useCallback, useTransition, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import TaskItem from "@/components/tasks/TaskItem";
-import TaskFilter from "@/components/tasks/TaskFilter";
-import TaskSearchBar from "@/components/tasks/TaskSearchbar";
-import TaskSort from "@/components/tasks/TaskSort";
-import TaskListTransition from "@/components/tasks/TaskListTransition";
-import ErrorNotification from "./ErrorNotification";
 import type { Task, FetchTasksParams } from "@/app/_lib/types/tasks";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { addURLParams } from "@/app/_lib/fetching";
-import ViewSwitch from "./ViewSwitch";
+import ErrorNotification from "./ErrorNotification";
+import Filters from "./Filters";
+import Modal from "../shared/Modal";
+import TaskListTransition from "../tasks/TaskListTransition";
+import ViewSwitch from "../UI/ViewSwitch";
+import NoTaskFound from "../tasks/NoTaskFound";
+import EditTaskForm from "../tasks/EditTaskForm";
+import TaskCreationForm from "../tasks/TaskCreationForm";
 
 type PageContentProps = {
   sortedTasks: Task[];
@@ -29,6 +30,17 @@ export default function Dashboard({
   const searchParamsRef = useRef(searchParams);
   const [isPending, startTransition] = useTransition();
   const [operationError, setOperationError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
+  const handleEditTask = (task: Task) => {
+    setTaskToEdit(task);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setTaskToEdit(null), 300); // Clear after animation (if any) or simply valid cleanup
+  };
 
   // Update ref whenever searchParams changes, but don't use it in dependency array
   searchParamsRef.current = searchParams;
@@ -49,55 +61,61 @@ export default function Dashboard({
 
   return (
     <div>
-      {/* Error Notification */}
-      {operationError && (
-        <ErrorNotification
-          errorMessage={operationError}
-          setErrorMessage={setOperationError}
-        />
-      )}
-
-      {/* List Section */}
-      <section>
-        <div className="mb-6">
-          <h2 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
-            Your Tasks ({sortedTasks?.length || 0})
-          </h2>
-          <div className="flex flex-col gap-3">
-            <TaskSearchBar onSearchChange={updateParams} />
-            <TaskFilter onFilterChange={updateParams} />
-            <TaskSort onParamsChange={updateParams} />
-          </div>
-        </div>
-
-        <div className="relative">
-          <ViewSwitch
-            tasks={sortedTasks}
-            dbError={dbError}
-            view={currentView}
-            onViewChangeAction={updateParams}
-            onError={setOperationError}
-          />
-
-          <TaskListTransition
-            taskCount={sortedTasks?.length || 0}
-            isPending={isPending}
-          >
-            {sortedTasks?.length === 0 ? (
-              <div className="text-center py-12 border-2 border-dashed border-(--border-color) rounded-xl">
-                <p className="text-(--text-secondary) text-sm">
-                  No tasks found.
-                  {filter !== "all"
-                    ? " Try a different filter!"
-                    : " Get started by creating one!"}
-                </p>
+          {/* Error Notification */}
+          {operationError && (
+            <ErrorNotification
+              errorMessage={operationError}
+              setErrorMessage={setOperationError}
+            />
+          )}
+    
+          {/* List Section */}
+          <section>
+            <div className="mb-6">
+              <h2 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
+                Your Tasks ({sortedTasks?.length || 0})
+              </h2>
+              <div>
+                <button onClick={() => setIsModalOpen(true)}>+</button>
+                <Filters updateParams={updateParams} />
               </div>
-            ) : (
-              ""
-            )}
-          </TaskListTransition>
+            </div>
+    
+            <div className="relative">
+              <ViewSwitch
+                tasks={sortedTasks}
+                dbError={dbError}
+                view={currentView}
+                onViewChangeAction={updateParams}
+                onError={setOperationError}
+                onEditTask={handleEditTask}
+              />
+    
+              <TaskListTransition
+                taskCount={sortedTasks?.length || 0}
+                isPending={isPending}
+              >
+                {sortedTasks?.length === 0 ? (
+                  <NoTaskFound filter={filter} />
+                ) : (
+                  ""
+                )}
+              </TaskListTransition>
+            </div>
+          </section>
+    
+          {/* Edit Task Modal */}
+          {isModalOpen && taskToEdit && (
+            <Modal onClose={handleCloseModal}>
+              <EditTaskForm task={taskToEdit} />
+            </Modal>
+          )}
+          {/* Create Task Modal */}
+          {isModalOpen && !taskToEdit && (
+            <Modal onClose={handleCloseModal}>
+              <TaskCreationForm />
+            </Modal>
+          )}
         </div>
-      </section>
-    </div>
   );
 }

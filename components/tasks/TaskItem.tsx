@@ -8,9 +8,10 @@ interface TaskItemProps {
   data: Task;
   onError?: (message: string) => void;
   onTaskUpdate?: (task: Task) => void;
+  onEditTask: (task: Task) => void;
 }
 
-export default function TaskItem({ data, onError, onTaskUpdate }: TaskItemProps) {
+export default function TaskItem({ data, onError, onTaskUpdate, onEditTask }: TaskItemProps) {
   const { id, title, description, status, due_date } = data;
   const [, startTransition] = useTransition();
   const [optimisticStatus, setOptimisticStatus] = useState(status);
@@ -45,8 +46,13 @@ export default function TaskItem({ data, onError, onTaskUpdate }: TaskItemProps)
   };
 
   return (
-    <div className="group relative flex items-start gap-4 p-4 rounded-xl border border-(--border-color) bg-(--bg-tertiary)/50 hover:bg-(--bg-tertiary) hover:border-(--border-color) transition-all">
-      <div className="flex items-center h-6">
+    <div 
+      onClick={() => {
+        onEditTask(data);
+      }}
+      className="group relative flex items-start gap-4 p-4 rounded-xl border border-(--border-color) bg-(--bg-tertiary)/50 hover:bg-(--bg-tertiary) hover:border-(--border-color) transition-all cursor-pointer"
+    >
+      <div className="flex items-center h-6" onClick={(e) => e.stopPropagation()}>
         <input
           type="checkbox"
           checked={optimisticStatus ?? false}
@@ -86,9 +92,10 @@ export default function TaskItem({ data, onError, onTaskUpdate }: TaskItemProps)
       </div>
 
       <button
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           if (confirm("Are you sure?")) {
-            startTransition(() => deleteTask(id));
+            startTransition(() => { deleteTask(id); });
           }
         }}
         className="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 bg-(--button-color) hover:bg-(--button-highlight) rounded transition-all"

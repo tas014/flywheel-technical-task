@@ -1,27 +1,26 @@
 "use client";
 
-import { useActionState } from "react";
+import { ComponentState, useActionState } from "react";
 import { createTask } from "../../app/_lib/actions";
 
 export default function TaskCreationForm() {
-  const [state, formAction, isPending] = useActionState(createTask, null);
-
+  const actionHandler = async (
+    prevState: ComponentState, // unused parameter for useActionState compatibility
+    formData: FormData
+  ) => {
+    return await createTask(prevState, formData);
+  };
+  const [state, formAction, isPending] = useActionState(actionHandler, null);
   return (
-    <section className="mb-12">
-      <h2 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
+    <div className="mb-12">
+      <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
         New Task
-      </h2>
+      </h3>
 
       <form
         action={formAction}
         className="flex flex-col gap-4 p-4 rounded-xl border border-(--border-color) bg-(--bg-tertiary)/50"
       >
-        {state && (
-          <div className="px-3 py-2 rounded-lg bg-(--bg-error)/20 border border-(--text-error) text-(--text-error) text-sm">
-            {state}
-          </div>
-        )}
-
         <div className="flex flex-col gap-2">
           <label htmlFor="title" className="text-sm font-medium text-(--text-secondary)">
             Task Title
@@ -91,6 +90,16 @@ export default function TaskCreationForm() {
           {isPending ? "Creating..." : "Create Task"}
         </button>
       </form>
-    </section>
+      {state && state !== "success" && (
+          <div className="px-3 py-2 rounded-lg bg-(--bg-error)/20 border border-(--text-error) text-(--text-error) text-sm">
+            {state}
+          </div>
+        )}
+      {state === "success" && (
+        <div className="px-3 py-2 rounded-lg bg-(--bg-success)/20 border border-(--text-success) text-(--text-success) text-sm">
+          Task created successfully!
+        </div>
+      )}
+    </div>
   );
 }

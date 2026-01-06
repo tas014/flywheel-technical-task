@@ -20,7 +20,7 @@ export default function TaskSort({ onParamsChange }: TaskSortProps) {
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const sort = e.target.value as SortMode;
-    onParamsChange({ sort, order: "desc" });
+    onParamsChange({ sort, order: "asc" });
   };
 
   const handleOrderToggle = () => {
@@ -58,7 +58,7 @@ export default function TaskSort({ onParamsChange }: TaskSortProps) {
         className="ml-2 px-2 py-1.5 rounded-lg bg-(--button-color) text-(--text-primary) hover:bg-(--button-highlight) hover:text-(--button-color) transition-all cursor-pointer"
         title={`Sort ${currentOrder === "asc" ? "descending" : "ascending"}`}
       >
-        {currentOrder === "asc" ? <SortAscending /> : <SortDescending />}
+        {currentOrder !== "asc" ? <SortAscending /> : <SortDescending />}
       </button>
     </div>
   );

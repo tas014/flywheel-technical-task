@@ -64,7 +64,6 @@ export async function fetchAndProcessTasks(
   // Apply client-side filters and sorting
   let processedTasks = filterTasks(tasks, filter);
   processedTasks = sortTasks(processedTasks, sort, order);
-
   return {
     tasks: processedTasks,
     error: null,
