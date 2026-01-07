@@ -48,6 +48,10 @@ npx supabase gen types typescript --project-id (your-project-id) > _lib/types/da
 
 ## Design Decisions
 
+### Theme and UI
+
+I chose to use some of the Flywheel Studio website page's colors as the main pallette for the app, as well as an Inter font which is a standard for these kind of apps. I was using multiple sites as reference (which ended up being a mistake since while I do have a multimedia background, I'm not the best ar UI/UX design so reconciling some of the styles consumed more of my development time than I'd like to admit). The project is made with tailwindcss and no component libraries.
+
 ### Redirection
 
 Not creating needless friction in a user's journey is paramount, but there are cases where having a validated user is needed. This is one of those cases, since it'd make very little sense to have a task manager app that can't give you persistent edition, creation or deletion of your tasks. If the app was being used by one user exclusively, there'd be no need for a user since Row Level Security (RLS) would be redundant, but the existence of many users makes it so that users are necessary, and this is why there's no point in allowing the user to access the main dashboard page without being logged in.
