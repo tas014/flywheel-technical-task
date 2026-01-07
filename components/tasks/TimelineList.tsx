@@ -22,7 +22,7 @@ export default function TimelineList({
   onEditTask,
 }: TimelineListProps) {
   const hasTasks = tasks.length > 0;
-  const noDeadlineTasks = tasks.filter((task) => !task.due_date);
+  /* filtered lists removed, processing all tasks now */
   const tasksWithDeadlines = tasks.filter((task) => task.due_date);
 
   // Get date range logic
@@ -65,18 +65,27 @@ export default function TimelineList({
     { startIndex: number; endIndex: number }
   >();
   if (dateRange.length > 0) {
-    tasksWithDeadlines.forEach((task) => {
-      const createdDate = new Date(task.created_at);
-      createdDate.setHours(0, 0, 0, 0);
-      const dueDate = new Date(task.due_date!);
-      dueDate.setHours(0, 0, 0, 0);
+    tasks.forEach((task) => {
+      let startIndex = -1;
+      let endIndex = -1;
 
-      const startIndex = dateRange.findIndex(
-        (d) => d.getTime() === createdDate.getTime()
-      );
-      const endIndex = dateRange.findIndex(
-        (d) => d.getTime() === dueDate.getTime()
-      );
+      if (task.due_date) {
+        const createdDate = new Date(task.created_at);
+        createdDate.setHours(0, 0, 0, 0);
+        const dueDate = new Date(task.due_date);
+        dueDate.setHours(0, 0, 0, 0);
+
+        startIndex = dateRange.findIndex(
+          (d) => d.getTime() === createdDate.getTime()
+        );
+        endIndex = dateRange.findIndex(
+          (d) => d.getTime() === dueDate.getTime()
+        );
+      } else {
+        // Tasks without deadline span the entire timeline
+        startIndex = 0;
+        endIndex = dateRange.length - 1;
+      }
 
       if (startIndex !== -1 && endIndex !== -1) {
         taskDateRanges.set(task.id, { startIndex, endIndex });
@@ -95,20 +104,20 @@ export default function TimelineList({
       )}
 
       {!hasTasks ? (
-        <div className="h-full text-center py-12 border-2 border-dashed border-(--border-color) rounded-xl">
+        <div className="h-full text-center border-2 border-dashed border-(--border-color) rounded-sm">
           <p className="text-(--text-secondary) text-sm">
             No tasks found. Get started by creating one!
           </p>
         </div>
       ) : (
-        <div className="h-full md:h-auto flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 md:block md:pb-0">
+        <div className="h-full flex overflow-x-auto snap-x snap-mandatory gap-4 md:block md:pb-0">
           {showTimeline && (
-            <div className="shrink-0 snap-center w-full mb-6 overflow-auto pb-4 min-h-0">
+            <div className="shrink-0 snap-center w-full h-full overflow-auto min-h-0">
               <div
                 className="grid gap-y-2 relative w-[max-content] min-w-[max-content] min-h-full"
                 style={{
                   gridTemplateColumns: `repeat(${dateRange.length}, minmax(140px, 20vw))`,
-                  gridTemplateRows: `max-content repeat(${tasksWithDeadlines.length}, max-content) 1fr`,
+                  gridTemplateRows: `max-content repeat(${tasks.length}, max-content) 1fr`,
                   backgroundImage:
                     "linear-gradient(to right, var(--foreground) 1px, transparent 1px)",
                   backgroundSize: `calc(100% / ${dateRange.length}) 100%`,
@@ -116,35 +125,12 @@ export default function TimelineList({
               >
                 <TimelineGridHead dateRange={dateRange} />
                 <TimelineGridBody
-                  tasks={tasksWithDeadlines}
+                  tasks={tasks}
                   taskDateRanges={taskDateRanges}
                   onError={onError}
                   onTaskUpdate={onTaskUpdate}
                   onEditTask={onEditTask}
                 />
-              </div>
-            </div>
-          )}
-
-          {noDeadlineTasks.length > 0 && (
-            <div
-              className={`w-[85%] shrink-0 snap-center md:w-full ${
-                showTimeline ? "md:mt-8" : "mb-6"
-              }`}
-            >
-              <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-3 px-4">
-                No Deadline ({noDeadlineTasks.length})
-              </h3>
-              <div className="space-y-2 px-4">
-                {noDeadlineTasks.map((task) => (
-                  <TaskItem
-                    key={task.id}
-                    data={task}
-                    onError={onError}
-                    onTaskUpdate={onTaskUpdate}
-                    onEditTask={onEditTask}
-                  />
-                ))}
               </div>
             </div>
           )}

@@ -30,6 +30,7 @@ export default function Dashboard({
   const [isPending, startTransition] = useTransition();
   const [operationError, setOperationError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loadingLabel, setLoadingLabel] = useState("Loading...");
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   const handleEditTask = (task: Task) => {
     setTaskToEdit(task);
@@ -50,6 +51,13 @@ export default function Dashboard({
 
   const updateParams = useCallback(
     (updates: FetchTasksParams) => {
+      // Determine label based on what's changing
+      if ("search" in updates) setLoadingLabel("Searching...");
+      else if ("filter" in updates) setLoadingLabel("Filtering...");
+      else if ("sort" in updates || "order" in updates)
+        setLoadingLabel("Sorting...");
+      else if ("view" in updates) setLoadingLabel("Loading...");
+
       const newUrl = addURLParams(searchParamsRef.current, updates);
       startTransition(() => {
         router.push(newUrl);
@@ -92,6 +100,7 @@ export default function Dashboard({
             onEditTask={handleEditTask}
             onAddTask={() => setIsModalOpen(true)}
             isPending={isPending}
+            loadingLabel={loadingLabel}
             filter={filter}
           />
         </div>

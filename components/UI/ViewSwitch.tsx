@@ -17,6 +17,7 @@ type ViewSwitchProps = {
   onEditTask: (task: Task) => void;
   onAddTask: () => void;
   isPending: boolean;
+  loadingLabel: string;
   filter: string;
 };
 
@@ -28,7 +29,9 @@ export default function ViewSwitch({
   onError,
   onEditTask,
   onAddTask,
+
   isPending,
+  loadingLabel,
   filter,
 }: ViewSwitchProps) {
   const [tasks, setTasks] = useState(initialTasks);
@@ -50,14 +53,14 @@ export default function ViewSwitch({
   };
 
   return (
-    <div className="w-full bg-(--bg-translucent) rounded-md grid grid-rows-[auto_1fr]">
+    <div className="w-full bg-(--background-soft)/20 rounded-md grid grid-rows-[auto_1fr]">
       <div className="grid lg:grid-cols-2 lg:divide-x-2 divide-(--bg-task-view) border-b-1 border-(--bg-task-view)">
         <button
           onClick={() => handleViewChange("kanban")}
           className={`px-4 py-2 text-sm transition-colors cursor-pointer text-xl ${
             localView === "kanban"
               ? "bg-(--bg-task-view) text-(--text-tertiary) font-bold"
-              : "hover:bg-(--bg-task-view) hover:text-(--text-tertiary) font-medium"
+              : "hover:bg-(--bg-task-view)/80 hover:text-(--text-tertiary) font-medium"
           }`}
         >
           Kanban
@@ -67,14 +70,18 @@ export default function ViewSwitch({
           className={`px-4 py-2 text-sm transition-colors cursor-pointer text-xl ${
             localView === "timeline"
               ? "bg-(--bg-task-view) text-(--text-tertiary) font-bold"
-              : "hover:bg-(--bg-task-view) hover:text-(--text-tertiary) font-medium"
+              : "hover:bg-(--bg-task-view)/80 hover:text-(--text-tertiary) font-medium"
           }`}
         >
           Timeline
         </button>
       </div>
-      <div className="w-[clamp(400px,calc(100vw-4rem),2500px)] h-[clamp(600px,90vh,1500px)] lg:p-4 ">
-        <TaskListTransition taskCount={tasks.length} isPending={isPending}>
+      <div className="bg-(--text-primary)/10 flex justify-center items-center">
+        <TaskListTransition
+          taskCount={tasks.length}
+          isPending={isPending}
+          loadingLabel={loadingLabel}
+        >
           {tasks.length === 0 ? (
             <NoTaskFound filter={filter} onAddTask={onAddTask} />
           ) : (

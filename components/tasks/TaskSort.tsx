@@ -45,21 +45,18 @@ export default function TaskSort({ onParamsChange }: TaskSortProps) {
       <button
         ref={triggerRef}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-12 h-12 text-(--text-primary) flex items-center justify-center rounded-lg cursor-pointer bg-(--button-color)/70 transition-all ${
-          isOpen || currentSort !== "none"
-            ? "bg-(--button-highlight)"
-            : "hover:bg-(--button-color)"
+        className={`w-12 h-12 text-(--text-primary) flex items-center justify-center rounded-lg cursor-pointer transition-all border border-(--button-color) border-2 ${
+          isOpen ? "bg-(--button-highlight)" : "hover:bg-(--button-color)/70"
         }`}
         title={`Sort by ${currentSort} (${currentOrder})`}
       >
-        {currentOrder === "asc" ? <SortAscending /> : <SortDescending />}
+        {currentOrder === "asc" ? <SortDescending /> : <SortAscending />}
       </button>
 
       {isOpen && (
         <Popover
           onClose={() => setIsOpen(false)}
           triggerRef={triggerRef}
-          align="right"
           className="w-48"
         >
           <div className="flex flex-col gap-1">
@@ -87,17 +84,6 @@ export default function TaskSort({ onParamsChange }: TaskSortProps) {
               Order
             </span>
             <button
-              onClick={() => handleOrderSelect("asc")}
-              className={`flex cursor-pointer items-center justify-between px-2 py-1.5 rounded-md text-sm transition-colors ${
-                currentOrder === "asc"
-                  ? "text-(--text-primary) bg-(--button-highlight) font-medium"
-                  : "text-(--text-secondary) hover:bg-(--button-color)/70"
-              }`}
-            >
-              Ascending
-              {currentOrder === "asc" && <Check />}
-            </button>
-            <button
               onClick={() => handleOrderSelect("desc")}
               className={`flex cursor-pointer items-center justify-between px-2 py-1.5 rounded-md text-sm transition-colors ${
                 currentOrder === "desc"
@@ -105,8 +91,19 @@ export default function TaskSort({ onParamsChange }: TaskSortProps) {
                   : "text-(--text-secondary) hover:bg-(--button-color)/70"
               }`}
             >
-              Descending
+              Ascending
               {currentOrder === "desc" && <Check />}
+            </button>
+            <button
+              onClick={() => handleOrderSelect("asc")}
+              className={`flex cursor-pointer items-center justify-between px-2 py-1.5 rounded-md text-sm transition-colors ${
+                currentOrder === "asc"
+                  ? "text-(--text-primary) bg-(--button-highlight) font-medium"
+                  : "text-(--text-secondary) hover:bg-(--button-color)/70"
+              }`}
+            >
+              Descending
+              {currentOrder === "asc" && <Check />}
             </button>
           </div>
         </Popover>

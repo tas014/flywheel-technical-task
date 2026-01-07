@@ -8,7 +8,7 @@ export default function NoTaskFound({
   onAddTask: () => void;
 }) {
   return (
-    <div className="text-center h-full py-12 flex flex-col items-center justify-center gap-4 border-2 border-dashed border-(--border-color) rounded-xl">
+    <div className="text-center h-full w-full flex flex-col items-center justify-center gap-4 border-2 border-dashed border-(--border-color) rounded-xl">
       <p className="text-(--text-secondary) text-sm">
         No tasks found.
         {filter !== "all"

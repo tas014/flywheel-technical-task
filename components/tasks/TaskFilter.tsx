@@ -34,10 +34,8 @@ export default function TaskFilter({ onFilterChange }: TaskFilterProps) {
       <button
         ref={triggerRef}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-12 h-12 text-(--text-primary) flex items-center justify-center rounded-lg cursor-pointer bg-(--button-color)/70 transition-all ${
-          isOpen || currentFilter !== "all"
-            ? "bg-(--button-highlight)"
-            : "hover:bg-(--button-color)"
+        className={`w-12 h-12 text-(--text-primary) flex items-center justify-center rounded-lg cursor-pointer transition-all border border-(--button-color) border-2 ${
+          isOpen ? "bg-(--button-highlight)" : "hover:bg-(--button-color)/70"
         }`}
         title="Filter tasks"
       >
@@ -48,7 +46,6 @@ export default function TaskFilter({ onFilterChange }: TaskFilterProps) {
         <Popover
           onClose={() => setIsOpen(false)}
           triggerRef={triggerRef}
-          align="right"
           className="w-40"
         >
           <div className="flex flex-col gap-1">

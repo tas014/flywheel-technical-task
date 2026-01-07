@@ -6,7 +6,7 @@ export default function SignOutButton() {
       onClick={signOut}
       className="w-full text-left px-2 py-1.5 rounded-md text-sm text-(--text-secondary) hover:bg-(--button-color)/30 transition-colors cursor-pointer"
     >
-      Log Out
+      Sign Out
     </button>
   );
 }

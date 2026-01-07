@@ -22,6 +22,15 @@ export default function TimelineGridBody({
         const range = taskDateRanges.get(task.id);
         if (!range) return null;
 
+        // Logic to append "(No Deadline)" if needed
+        let displayData = task;
+        if (!task.due_date) {
+          displayData = {
+            ...task,
+            title: `${task.title} (No Deadline)`,
+          };
+        }
+
         return (
           <div
             key={task.id}
@@ -33,7 +42,7 @@ export default function TimelineGridBody({
             }}
           >
             <TaskItem
-              data={task}
+              data={displayData}
               onError={onError}
               onTaskUpdate={onTaskUpdate}
               onEditTask={onEditTask}
