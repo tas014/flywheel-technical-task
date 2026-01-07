@@ -8,9 +8,9 @@
 - Kanban vs Timeline view (DONE)
 - Light/Dark Mode switch (DONE)
 - Tidy Up Light Mode UI (DONE)
-- Add Documentation
-- Clean up code
+- Add Documentation (DONE)
+- Clean up code (DONE)
 - Test empty task state UI (DONE)
 - Add Metadata (DONE)
 - Fix Mobile Landscape Forms (DONE)
-- Add Login/Signup Background Image
+- Add Login/Signup Background Image (DONE)

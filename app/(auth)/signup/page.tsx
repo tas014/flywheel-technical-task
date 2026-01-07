@@ -8,11 +8,14 @@ export default function Signup() {
   const [error, formAction, isPending] = useActionState(signUp, null);
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-(--bg-translucent) rounded-lg text-(--text-primary) size-fit w-full">
-      <h1 className="text-xl text-center font-semibold uppercase tracking-wider py-5 border-b border-(--border-color) mb-4">
+    <div className="max-w-lg w-9/10 p-6 bg-(--bg-translucent) rounded-md text-(--text-primary) landscape:flex lg:!block">
+      <h1 className="text-xl text-center font-semibold uppercase tracking-wider py-5 border-b landscape:border-r landscape:border-b-0 border-(--border-color) mb-4 landscape:flex landscape:justify-center landscape:items-center landscape:pr-6 landscape:mr-6 lg:!border-b lg:!border-r-0 lg:!mb-4 lg:!block lg:!pr-0 lg:!mr-0">
         Signup
       </h1>
-      <form action={formAction} className="flex flex-col gap-6">
+      <form
+        action={formAction}
+        className="flex flex-col gap-6 landscape:gap-2 lg:!gap-6"
+      >
         <div className="flex flex-col gap-2">
           <label className="font-medium text-lg" htmlFor="email">
             Email
