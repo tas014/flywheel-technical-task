@@ -22,11 +22,13 @@ export default function ThemeSwitch() {
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-(--text-secondary) hover:bg-(--button-color)/30 transition-colors cursor-pointer"
+      className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm ${
+        theme === "dark" ? "text-amber-600" : "text-amber-300"
+      } hover:bg-(--button-color)/30 transition-colors cursor-pointer`}
       title="Toggle dark mode"
     >
-      {theme === "dark" ? <Dark /> : <Light />}{" "}
-      <span className="text-base">Switch theme</span>
+      {theme === "dark" ? <Dark /> : <Light />}
+      <span className="text-base text-(--text-secondary)"> Switch theme</span>
     </button>
   );
 }

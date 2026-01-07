@@ -64,7 +64,6 @@ export default function Signup() {
           <span className="font-medium underline">Login</span>
         </Link>
 
-        {/* 3. Display the error returned from the server action */}
         {error && (
           <div className="px-3 py-2 rounded-sm bg-(--bg-error)/20 border border-(--text-error) text-(--text-error) text-sm">
             Error: {error}

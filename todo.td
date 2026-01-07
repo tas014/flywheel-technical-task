@@ -13,3 +13,4 @@
 - Test empty task state UI (DONE)
 - Add Metadata (DONE)
 - Fix Mobile Landscape Forms (DONE)
+- Add Login/Signup Background Image

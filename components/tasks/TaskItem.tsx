@@ -21,6 +21,9 @@ export default function TaskItem({
   const { id, title, description, status, due_date } = data;
   const [, startTransition] = useTransition();
   const [optimisticStatus, setOptimisticStatus] = useState(status);
+  const [isDeleted, setIsDeleted] = useState(false);
+
+  if (isDeleted) return null;
 
   // Helper to format the date
   const formattedDate = due_date
@@ -119,7 +122,14 @@ export default function TaskItem({
         )}
       </div>
 
-      <DeleteButton id={id} />
+      <DeleteButton
+        id={id}
+        onDeleteStart={() => setIsDeleted(true)}
+        onDeleteError={(error) => {
+          setIsDeleted(false);
+          onError?.(error);
+        }}
+      />
     </div>
   );
 }

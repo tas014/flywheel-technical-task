@@ -9,6 +9,7 @@ import { AuthFormData, ErrorMessage } from "./types/auth";
 
 // Auth
 // prevstate for useActionState compatibility
+// since redirect functions as an exception that next catches, we don't try catch exceptions with a throw error and return them instead
 async function login(
   prevState: ComponentState,
   formData: FormData
@@ -24,7 +25,7 @@ async function login(
   });
 
   if (error) {
-    return error.message; // Resolves as the 'state' in your component
+    return error.message;
   }
 
   revalidatePath("/", "layout");
@@ -62,7 +63,6 @@ async function signOut(): Promise<ErrorMessage> | never {
   if (error) return error.message;
   revalidatePath("/", "layout");
   redirect("/login");
-  //since redirect functions as an exception that next catches, don't try catch exceptions with a throw error
 }
 
 // CRUD
@@ -121,12 +121,13 @@ async function editTask(id: number, toggleOrForm: FormData | boolean) {
 
 async function deleteTask(id: number) {
   const supabase = await createClient();
-  // ensure we delete only the selected task
   const { error } = await supabase.from("tasks").delete().eq("id", id);
   if (error) return error.message;
   revalidatePath("/");
   return "success";
 }
+
+// private utility functions
 
 function _getAuthFormData(formData: FormData): AuthFormData {
   const email = formData.get("email");

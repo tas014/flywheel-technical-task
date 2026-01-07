@@ -44,10 +44,8 @@ export async function fetchAndProcessTasks(
   const order = params.order || "desc";
   const search = params.search || "";
 
-  // Build the database query
+  // Build the database query and apply search filter to database query
   let query = supabase.from("tasks").select("*");
-
-  // Apply search filter to database query
   if (search) {
     query = query.or(`title.ilike.%${search}%`);
   }

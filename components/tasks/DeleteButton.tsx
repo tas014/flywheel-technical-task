@@ -5,9 +5,15 @@ import { deleteTask } from "../../app/_lib/actions";
 
 interface DeleteButtonProps {
   id: number;
+  onDeleteStart?: () => void;
+  onDeleteError?: (error: string) => void;
 }
 
-export default function DeleteButton({ id }: DeleteButtonProps) {
+export default function DeleteButton({
+  id,
+  onDeleteStart,
+  onDeleteError,
+}: DeleteButtonProps) {
   const [, startTransition] = useTransition();
 
   return (
@@ -15,8 +21,12 @@ export default function DeleteButton({ id }: DeleteButtonProps) {
       onClick={(e) => {
         e.stopPropagation();
         if (confirm("Are you sure?")) {
-          startTransition(() => {
-            deleteTask(id);
+          onDeleteStart?.();
+          startTransition(async () => {
+            const result = await deleteTask(id);
+            if (result !== "success") {
+              onDeleteError?.(result || "Failed to delete task");
+            }
           });
         }
       }}
