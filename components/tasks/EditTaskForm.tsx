@@ -26,7 +26,7 @@ export default function EditTaskForm({ task }: EditTaskFormProps) {
 
   return (
     <div className="text-(--text-primary)">
-      <h3 className="text-xl text-center font-semibold uppercase tracking-wider py-5 border-b border-(--border-color) mb-4">
+      <h3 className="text-3xl text-center font-semibold uppercase tracking-wider py-6 border-b border-(--border-color) mb-4">
         Edit Task
       </h3>
       <div>

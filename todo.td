@@ -11,5 +11,5 @@
 - Add Documentation
 - Clean up code
 - Test empty task state UI (DONE)
-- Add Metadata
-- Fix Mobile Landscape Forms
+- Add Metadata (DONE)
+- Fix Mobile Landscape Forms (DONE)
