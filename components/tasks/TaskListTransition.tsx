@@ -21,7 +21,7 @@ export default function TaskListTransition({
 
   return (
     <div
-      className={`space-y-3 transition-all duration-200 ${
+      className={`space-y-3 transition-all duration-200 h-full ${
         isPending
           ? "opacity-60 pointer-events-none"
           : "opacity-100 pointer-events-auto"

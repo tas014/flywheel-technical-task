@@ -5,9 +5,13 @@ interface ErrorNotificationProps {
   setErrorMessage: (message: string | null) => void;
 }
 
-export default function ErrorNotification({ errorMessage, setErrorMessage }: ErrorNotificationProps) {
+export default function ErrorNotification({
+  errorMessage,
+  setErrorMessage,
+}: ErrorNotificationProps) {
   return (
-    <div className="mb-4 p-4 rounded-lg bg-(--bg-error)/20 border border-(--text-error)">
+    // make it stick to the bottom of the screen centered
+    <div className="mb-4 p-4 bottom-0 fixed left-1/2 transform -translate-x-1/2 max-w-lg rounded-lg bg-(--bg-error)/20 border border-(--text-error)">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <svg

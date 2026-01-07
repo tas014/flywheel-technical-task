@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import KanbanList from "@/components/tasks/KanbanList";
 import TimelineList from "@/components/tasks/TimelineList";
+import TaskListTransition from "@/components/tasks/TaskListTransition";
+import NoTaskFound from "@/components/tasks/NoTaskFound";
 import type { Task, View } from "@/app/_lib/types/tasks";
 import type { PostgrestError } from "@supabase/supabase-js";
 
@@ -13,6 +15,9 @@ type ViewSwitchProps = {
   onViewChangeAction: (updates: { view: View }) => void;
   onError?: (message: string) => void;
   onEditTask: (task: Task) => void;
+  onAddTask: () => void;
+  isPending: boolean;
+  filter: string;
 };
 
 export default function ViewSwitch({
@@ -22,6 +27,9 @@ export default function ViewSwitch({
   onViewChangeAction,
   onError,
   onEditTask,
+  onAddTask,
+  isPending,
+  filter,
 }: ViewSwitchProps) {
   const [tasks, setTasks] = useState(initialTasks);
   const [localView, setLocalView] = useState(view);
@@ -66,24 +74,32 @@ export default function ViewSwitch({
         </button>
       </div>
       <div className="p-4 max-w-full min-w-0 overflow-hidden">
-        {localView === "kanban" && (
-          <KanbanList
-            tasks={tasks}
-            dbError={dbError}
-            onError={onError}
-            onTaskUpdate={handleTaskUpdate}
-            onEditTask={onEditTask}
-          />
-        )}
-        {localView === "timeline" && (
-          <TimelineList
-            tasks={tasks}
-            dbError={dbError}
-            onError={onError}
-            onTaskUpdate={handleTaskUpdate}
-            onEditTask={onEditTask}
-          />
-        )}
+        <TaskListTransition taskCount={tasks.length} isPending={isPending}>
+          {tasks.length === 0 ? (
+            <NoTaskFound filter={filter} onAddTask={onAddTask} />
+          ) : (
+            <>
+              {localView === "kanban" && (
+                <KanbanList
+                  tasks={tasks}
+                  dbError={dbError}
+                  onError={onError}
+                  onTaskUpdate={handleTaskUpdate}
+                  onEditTask={onEditTask}
+                />
+              )}
+              {localView === "timeline" && (
+                <TimelineList
+                  tasks={tasks}
+                  dbError={dbError}
+                  onError={onError}
+                  onTaskUpdate={handleTaskUpdate}
+                  onEditTask={onEditTask}
+                />
+              )}
+            </>
+          )}
+        </TaskListTransition>
       </div>
     </div>
   );

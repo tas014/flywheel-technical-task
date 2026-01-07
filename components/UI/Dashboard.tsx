@@ -6,11 +6,10 @@ import type { Task, FetchTasksParams } from "@/app/_lib/types/tasks";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { addURLParams } from "@/app/_lib/fetching";
 import ErrorNotification from "./ErrorNotification";
+import AddTaskButton from "./AddTaskButton";
 import Filters from "./Filters";
 import Modal from "../shared/Modal";
-import TaskListTransition from "../tasks/TaskListTransition";
 import ViewSwitch from "../UI/ViewSwitch";
-import NoTaskFound from "../tasks/NoTaskFound";
 import EditTaskForm from "../tasks/EditTaskForm";
 import TaskCreationForm from "../tasks/TaskCreationForm";
 
@@ -77,13 +76,7 @@ export default function Dashboard({
           </h2>
           <div className="flex gap-3 justify-between">
             <Filters updateParams={updateParams} />
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="w-12 h-12 rounded-sm border-(--button-color) border-2 text-(--text-primary) hover:bg-(--button-color)/30 transition-all cursor-pointer"
-              title="Create new task"
-            >
-              +
-            </button>
+            <AddTaskButton onClick={() => setIsModalOpen(true)} />
           </div>
         </div>
 
@@ -95,14 +88,10 @@ export default function Dashboard({
             onViewChangeAction={updateParams}
             onError={setOperationError}
             onEditTask={handleEditTask}
-          />
-
-          <TaskListTransition
-            taskCount={sortedTasks?.length || 0}
+            onAddTask={() => setIsModalOpen(true)}
             isPending={isPending}
-          >
-            {sortedTasks?.length === 0 ? <NoTaskFound filter={filter} /> : ""}
-          </TaskListTransition>
+            filter={filter}
+          />
         </div>
       </section>
 

@@ -7,3 +7,7 @@
 - Loading transitions (Scrapped)
 - Kanban vs Timeline view (DONE)
 - Light/Dark Mode switch (DONE)
+- Tidy Up Light Mode UI
+- Add Documentation
+- Clean up code
+- Test empty task state UI (DONE)
