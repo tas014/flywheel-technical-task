@@ -105,3 +105,4 @@ User preference matters, every app should have the option to switch pallettes if
 - Add deadline notification options.
 - Add a priority property to the schema to handle larger projects.
 - Thoroughly test the UI and accessibility.
+- Improve Mobile UI, it currently works but there's room for improvement.
