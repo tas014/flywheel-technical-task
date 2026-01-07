@@ -114,7 +114,7 @@ export default function TimelineList({
           {showTimeline && (
             <div className="shrink-0 snap-center w-full h-full overflow-auto min-h-0">
               <div
-                className="grid gap-y-2 relative w-[max-content] min-w-[max-content] min-h-full [--timeline-col-width:25vw] md:[--timeline-col-width:20vw] lg:[--timeline-col-width:15vw]"
+                className="grid gap-y-2 relative w-[max-content] min-w-[max-content] min-h-full [--timeline-col-width:66vw] md:[--timeline-col-width:33vw] lg:[--timeline-col-width:25vw]"
                 style={{
                   gridTemplateColumns: `repeat(${dateRange.length}, minmax(140px, var(--timeline-col-width)))`,
                   gridTemplateRows: `max-content repeat(${tasks.length}, max-content) 1fr`,

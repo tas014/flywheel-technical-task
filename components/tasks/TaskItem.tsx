@@ -10,6 +10,7 @@ interface TaskItemProps {
   onError?: (message: string) => void;
   onTaskUpdate?: (task: Task) => void;
   onEditTask: (task: Task) => void;
+  hideDate?: boolean;
 }
 
 export default function TaskItem({
@@ -17,6 +18,7 @@ export default function TaskItem({
   onError,
   onTaskUpdate,
   onEditTask,
+  hideDate,
 }: TaskItemProps) {
   const { id, title, description, status, due_date } = data;
   const [, startTransition] = useTransition();
@@ -35,15 +37,13 @@ export default function TaskItem({
 
   const now = Date.now();
   const dueDateObj = due_date ? new Date(due_date) : null;
-  const isOverdue = Boolean(
-    !optimisticStatus && dueDateObj && dueDateObj.getTime() < now
-  );
-  const isDueSoon = Boolean(
+  const isOverdue =
+    !optimisticStatus && dueDateObj && dueDateObj.getTime() < now;
+  const isDueSoon =
     !optimisticStatus &&
-      !isOverdue &&
-      dueDateObj &&
-      dueDateObj.getTime() < now + 48 * 60 * 60 * 1000
-  );
+    !isOverdue &&
+    dueDateObj &&
+    dueDateObj.getTime() < now + 48 * 60 * 60 * 1000;
 
   const handleStatusChange = (newStatus: boolean) => {
     // Optimistically update UI locally
@@ -71,7 +71,7 @@ export default function TaskItem({
       onClick={() => {
         onEditTask(data);
       }}
-      className={`group relative flex items-start gap-4 p-4 rounded-xl border border-(--border-color) hover:border-(--border-color) transition-all cursor-pointer ${
+      className={`group relative flex items-start gap-4 p-2 md:p-4 rounded-xl border border-(--border-color) hover:border-(--border-color) transition-all cursor-pointer ${
         isOverdue
           ? "bg-(--overdue-task)/50 hover:bg-(--overdue-task)/80"
           : isDueSoon
@@ -80,7 +80,7 @@ export default function TaskItem({
       }`}
     >
       <div
-        className="flex items-center h-6"
+        className="flex items-center justify-center flex-col gap-2"
         onClick={(e) => e.stopPropagation()}
       >
         <input
@@ -91,12 +91,17 @@ export default function TaskItem({
           }}
           className="h-5 w-5 rounded border-(--border-color) bg-(--bg-tertiary) text-(--button-color) focus:ring-indigo-500 focus:ring-offset-zinc-900 transition-colors cursor-pointer"
         />
+        {formattedDate && !hideDate && (
+          <span className="text-xs font-medium uppercase tracking-wider text-(--text-secondary) bg-(--bg-tertiary) px-2 py-0.5 rounded">
+            {formattedDate}
+          </span>
+        )}
       </div>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
           <h3
-            className={`text-base md:text-lg font-bold transition-all truncate ${
+            className={`text-sm md:text-base font-bold transition-all truncate ${
               optimisticStatus
                 ? "text-(--text-prim) line-through"
                 : "text-(--text-primary)"
@@ -105,17 +110,11 @@ export default function TaskItem({
             {title} {isOverdue && "(Overdue)"}
             {isDueSoon && "(Due soon)"}
           </h3>
-
-          {formattedDate && (
-            <span className="text-xs font-medium uppercase tracking-wider text-(--text-secondary) bg-(--bg-tertiary) px-2 py-0.5 rounded">
-              {formattedDate}
-            </span>
-          )}
         </div>
 
         {description && (
           <p
-            className={`mt-1 text-sm leading-relaxed line-clamp-2 text-(--text-primary)`}
+            className={`mt-1 text-xs md:text-sm leading-relaxed line-clamp-2 text-(--text-primary)`}
           >
             {description}
           </p>

@@ -46,6 +46,7 @@ export default function TimelineGridBody({
               onError={onError}
               onTaskUpdate={onTaskUpdate}
               onEditTask={onEditTask}
+              hideDate={true}
             />
           </div>
         );
