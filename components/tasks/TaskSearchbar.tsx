@@ -29,13 +29,13 @@ export default function TaskSearchBar({ onSearchChange }: TaskSearchBarProps) {
   }, [term, onSearchChange]);
 
   return (
-    <div className="w-2xl flex items-center gap-2 bg-(--bg-tertiary) border-(--border-color) rounded-lg pl-4 py-1 transition-all">
+    <div className="h-12 flex-1 flex items-center gap-2 border-(--button-color) bg-(--button-color)/10 border-2 rounded-lg pl-4 transition-all">
       <Search />
       <input
         value={term}
         onChange={(e) => setTerm(e.target.value)}
         placeholder="Search tasks..."
-        className="border-none w-full :focus:border-none :focus:outline-none text-base"
+        className="border-none w-full h-full :focus:border-none :focus:outline-none text-base"
       />
     </div>
   );

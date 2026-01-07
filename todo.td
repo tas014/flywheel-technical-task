@@ -1,9 +1,9 @@
 - Check useEffect bloat (DONE)
-- Add createTask and editTask menu
+- Add createTask and editTask menu (DONE)
 - Create error handling and not found pages (DONE)
-- Add success and error messages for CRUD operations (Only edit and create left)
-- Optimistic updates (Only edit and create left)
-- Implement login/Signup UI
-- Loading transitions
+- Add success and error messages for CRUD operations (DONE)
+- Optimistic updates (DONE)
+- Implement login/Signup UI (DONE)
+- Loading transitions (Scrapped)
 - Kanban vs Timeline view (DONE)
 - Light/Dark Mode switch (DONE)

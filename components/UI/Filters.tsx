@@ -9,12 +9,10 @@ interface Props {
 
 export default function Filters({ updateParams }: Props) {
   return (
-    <div className="grid gap-3">
+    <div className="flex items-center gap-3 w-full">
       <TaskSearchbar onSearchChange={updateParams} />
-      <div className="flex gap-3">
-        <TaskFilter onFilterChange={updateParams} />
-        <TaskSort onParamsChange={updateParams} />
-      </div>
+      <TaskFilter onFilterChange={updateParams} />
+      <TaskSort onParamsChange={updateParams} />
     </div>
   );
 }

@@ -79,7 +79,7 @@ export default function Dashboard({
             <Filters updateParams={updateParams} />
             <button
               onClick={() => setIsModalOpen(true)}
-              className="w-12 h-12 rounded-full bg-(--button-highlight) text-(--text-tertiary) hover:bg-(--button-color) hover:text-(--button-highlight) transition-all cursor-pointer"
+              className="w-12 h-12 rounded-sm border-(--button-color) border-2 text-(--text-primary) hover:bg-(--button-color)/30 transition-all cursor-pointer"
               title="Create new task"
             >
               +

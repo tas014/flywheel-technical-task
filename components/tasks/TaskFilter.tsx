@@ -1,7 +1,10 @@
 "use client";
 
+import { useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Check from "../UI/Icons/Check";
+import FilterSpark from "../UI/Icons/FilterSpark";
+import Popover from "../shared/Popover";
 import type { FetchTasksParams } from "@/app/_lib/types/tasks";
 import { FilterMode } from "@/app/_lib/types/tasks";
 
@@ -11,12 +14,13 @@ interface TaskFilterProps {
 
 export default function TaskFilter({ onFilterChange }: TaskFilterProps) {
   const searchParams = useSearchParams();
-  // no need for effect and state since the page will update on URL change
-  const currentFilter = (searchParams.get("filter") || "none") as FilterMode;
+  const currentFilter = (searchParams.get("filter") || "all") as FilterMode;
+  const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const filter = e.target.value as FilterMode;
+  const handleFilterSelect = (filter: FilterMode) => {
     onFilterChange({ filter });
+    setIsOpen(false);
   };
 
   const filters: { label: string; value: FilterMode }[] = [
@@ -26,20 +30,48 @@ export default function TaskFilter({ onFilterChange }: TaskFilterProps) {
   ];
 
   return (
-    <div className="flex items-center gap-2">
-      <span>Filter: </span>
-      <select
-        value={currentFilter}
-        onChange={handleFilterChange}
-        className="px-3 py-1.5 rounded-lg text-sm font-medium bg-(--bg-tertiary) text-(--text-secondary) hover:bg-(--bg-secondary) transition-all appearance-none cursor-pointer"
+    <div className="relative">
+      <button
+        ref={triggerRef}
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-12 h-12 text-(--text-primary) flex items-center justify-center rounded-lg cursor-pointer bg-(--button-color)/70 transition-all ${
+          isOpen || currentFilter !== "all"
+            ? "bg-(--button-highlight)"
+            : "hover:bg-(--button-color)"
+        }`}
+        title="Filter tasks"
       >
-        {filters.map((filter) => (
-          <option key={filter.value} value={filter.value}>
-            {filter.label}
-          </option>
-        ))}
-      </select>
-      <Check />
+        <FilterSpark />
+      </button>
+
+      {isOpen && (
+        <Popover
+          onClose={() => setIsOpen(false)}
+          triggerRef={triggerRef}
+          align="right"
+          className="w-40"
+        >
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold text-(--text-primary) px-2 py-1 uppercase tracking-wider">
+              Filter By
+            </span>
+            {filters.map((filter) => (
+              <button
+                key={filter.value}
+                onClick={() => handleFilterSelect(filter.value)}
+                className={`flex cursor-pointer items-center justify-between px-2 py-1.5 rounded-md text-sm transition-colors ${
+                  currentFilter === filter.value
+                    ? "text-(--text-primary) bg-(--button-highlight) font-medium"
+                    : "text-(--text-secondary) hover:bg-(--button-color)/70"
+                }`}
+              >
+                {filter.label}
+                {currentFilter === filter.value && <Check />}
+              </button>
+            ))}
+          </div>
+        </Popover>
+      )}
     </div>
   );
 }
