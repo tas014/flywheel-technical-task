@@ -17,7 +17,7 @@ export default function Footer() {
           <a
             href="https://github.com/tas014/flywheel-technical-task/blob/main/README.md"
             target="_blank"
-            className="px-16 py-8 mx-16 md:border md:border-t-0 md:border-b-0 text-center underline"
+            className="px-4 py-4 mx-4 md:px-16 md:mx-16 md:py-8 md:border md:border-t-0 md:border-b-0 text-center underline"
           >
             Project Documentation
           </a>

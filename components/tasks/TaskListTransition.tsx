@@ -16,7 +16,7 @@ export default function TaskListTransition({
 }: TaskListTransitionProps) {
   return (
     <div
-      className={`w-[clamp(370px,100%,2400px)] max-w-[95vw] h-[clamp(600px,90vh,1500px)] space-y-3 transition-all duration-200 ${
+      className={`w-[clamp(300px,100%,2400px)] max-w-[95vw] h-[clamp(600px,90vh,1500px)] space-y-3 transition-all duration-200 ${
         isPending
           ? "opacity-60 pointer-events-none"
           : "opacity-100 pointer-events-auto"
