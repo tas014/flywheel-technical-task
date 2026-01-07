@@ -101,9 +101,9 @@ export default function TimelineList({
           </p>
         </div>
       ) : (
-        <>
+        <div className="h-full md:h-auto flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 md:block md:pb-0">
           {showTimeline && (
-            <div className="mb-6 overflow-auto pb-4 w-full flex-1 min-h-0">
+            <div className="shrink-0 snap-center w-full mb-6 overflow-auto pb-4 min-h-0">
               <div
                 className="grid gap-y-2 relative w-[max-content] min-w-[max-content] min-h-full"
                 style={{
@@ -127,7 +127,11 @@ export default function TimelineList({
           )}
 
           {noDeadlineTasks.length > 0 && (
-            <div className={showTimeline ? "mt-8" : "mb-6"}>
+            <div
+              className={`w-[85%] shrink-0 snap-center md:w-full ${
+                showTimeline ? "md:mt-8" : "mb-6"
+              }`}
+            >
               <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-3 px-4">
                 No Deadline ({noDeadlineTasks.length})
               </h3>
@@ -144,7 +148,7 @@ export default function TimelineList({
               </div>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

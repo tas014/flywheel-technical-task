@@ -11,7 +11,7 @@ export default function Modal({ children, onClose }: Props) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="p-5 bg-(--bg-translucent) rounded-lg relative min-w-1/3"
+        className="p-5 bg-(--bg-translucent) rounded-lg relative min-w-1/3 sm:min-w-1/2"
       >
         <button
           className="cursor-pointer absolute top-4 right-4 hover:text-(--button-color) text-(--text-primary) font-medium text-3xl transition-colors"

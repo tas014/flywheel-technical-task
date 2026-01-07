@@ -131,7 +131,7 @@ export default function TaskItem({
             });
           }
         }}
-        className="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 bg-(--button-color) hover:bg-(--button-highlight) rounded transition-all"
+        className="lg:opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 bg-red-900 hover:bg-(--text-error) hover:text-white/80 rounded transition-all"
         title="Delete task"
       >
         <svg

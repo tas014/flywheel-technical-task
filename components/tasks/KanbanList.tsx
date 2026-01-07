@@ -36,7 +36,7 @@ export default function KanbanList({
     label: string,
     emptyMessage: string
   ) => (
-    <div className="flex-1 bg-(--bg-tertiary)/50 rounded-xl border border-(--border-color) p-4">
+    <div className="w-[85%] mx-1 my-3 shrink-0 snap-center md:w-auto bg-(--bg-tertiary)/50 rounded-xl border border-(--border-color) p-4">
       <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
         {label} ({columnTasks.length})
       </h3>
@@ -65,13 +65,13 @@ export default function KanbanList({
 
   return (
     <div className="h-full">
-      <div className="h-full grid grid-cols-[1fr_auto_1fr] gap-4 text-(--text-primary)">
+      <div className="h-full md:h-full flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-[1fr_auto_1fr] gap-2 text-(--text-primary) pb-2 md:pb-0">
         {renderColumn(
           firstColumn,
           firstLabel,
           firstLabel === "Pending" ? "No pending tasks!" : "No completed tasks!"
         )}
-        <div className="flex items-center justify-center">
+        <div className="hidden md:flex items-center justify-center">
           <button
             onClick={() => setSwapped(!swapped)}
             className="cursor-pointer size-fit"

@@ -75,12 +75,14 @@ export default function Dashboard({
             Your Tasks ({sortedTasks?.length || 0})
           </h2>
           <div className="flex gap-3 justify-between">
-            <Filters updateParams={updateParams} />
-            <AddTaskButton onClick={() => setIsModalOpen(true)} />
+            <Filters
+              setIsModalOpen={setIsModalOpen}
+              updateParams={updateParams}
+            />
           </div>
         </div>
 
-        <div className="relative flex justify-center h-[70vh] w-full max-w-full overflow-hidden">
+        <div className="relative flex justify-center w-full max-w-full">
           <ViewSwitch
             tasks={sortedTasks}
             dbError={dbError}

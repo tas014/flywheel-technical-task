@@ -50,8 +50,8 @@ export default function ViewSwitch({
   };
 
   return (
-    <div className="w-full bg-(--bg-translucent) rounded-xl h-full grid grid-rows-[auto_1fr] overflow-hidden">
-      <div className="grid grid-cols-2 divide-x-2 divide-(--bg-task-view) border-b-1 border-(--bg-task-view)">
+    <div className="w-full bg-(--bg-translucent) rounded-md grid grid-rows-[auto_1fr]">
+      <div className="grid lg:grid-cols-2 lg:divide-x-2 divide-(--bg-task-view) border-b-1 border-(--bg-task-view)">
         <button
           onClick={() => handleViewChange("kanban")}
           className={`px-4 py-2 text-sm transition-colors cursor-pointer text-xl ${
@@ -73,7 +73,7 @@ export default function ViewSwitch({
           Timeline
         </button>
       </div>
-      <div className="p-4 max-w-full min-w-0 overflow-hidden">
+      <div className="w-[clamp(400px,calc(100vw-4rem),2500px)] h-[clamp(600px,90vh,1500px)] lg:p-4 ">
         <TaskListTransition taskCount={tasks.length} isPending={isPending}>
           {tasks.length === 0 ? (
             <NoTaskFound filter={filter} onAddTask={onAddTask} />
