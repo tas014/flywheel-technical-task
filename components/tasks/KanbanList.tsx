@@ -37,7 +37,7 @@ export default function KanbanList({
     emptyMessage: string
   ) => (
     <div className="w-[85%] mx-1 my-3 shrink-0 snap-center md:w-auto bg-(--background) rounded-sm p-4 flex flex-col max-h-full overflow-hidden">
-      <h3 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
+      <h3 className="text-base md:text-lg font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
         {label} ({columnTasks.length})
       </h3>
       <div className="space-y-2 flex-1 overflow-y-auto min-h-0 pr-2">

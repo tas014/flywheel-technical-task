@@ -99,13 +99,13 @@ export default function TimelineList({
     <div className="h-full flex flex-col">
       {dbError && (
         <div className="mb-4 p-4 rounded-lg bg-(--bg-error)/20 border border-(--text-error)">
-          <p className="text-(--text-error) text-sm">Could not load tasks.</p>
+          <p className="text-(--text-error) text-base">Could not load tasks.</p>
         </div>
       )}
 
       {!hasTasks ? (
         <div className="h-full text-center border-2 border-dashed border-(--border-color) rounded-sm">
-          <p className="text-(--text-secondary) text-sm">
+          <p className="text-(--text-secondary) text-base">
             No tasks found. Get started by creating one!
           </p>
         </div>

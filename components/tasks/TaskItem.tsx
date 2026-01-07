@@ -96,7 +96,7 @@ export default function TaskItem({
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
           <h3
-            className={`text-sm font-bold transition-all truncate ${
+            className={`text-base md:text-lg font-bold transition-all truncate ${
               optimisticStatus
                 ? "text-(--text-prim) line-through"
                 : "text-(--text-primary)"
@@ -107,7 +107,7 @@ export default function TaskItem({
           </h3>
 
           {formattedDate && (
-            <span className="text-[10px] font-medium uppercase tracking-wider text-(--text-secondary) bg-(--bg-tertiary) px-2 py-0.5 rounded">
+            <span className="text-xs font-medium uppercase tracking-wider text-(--text-secondary) bg-(--bg-tertiary) px-2 py-0.5 rounded">
               {formattedDate}
             </span>
           )}
@@ -115,7 +115,7 @@ export default function TaskItem({
 
         {description && (
           <p
-            className={`mt-1 text-xs leading-relaxed line-clamp-2 text-(--text-primary)`}
+            className={`mt-1 text-sm leading-relaxed line-clamp-2 text-(--text-primary)`}
           >
             {description}
           </p>

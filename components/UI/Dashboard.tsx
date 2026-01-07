@@ -79,7 +79,7 @@ export default function Dashboard({
       {/* List Section */}
       <section>
         <div className="mb-6">
-          <h2 className="text-sm font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
+          <h2 className="text-base md:text-lg font-semibold text-(--text-secondary) uppercase tracking-wider mb-4">
             Your Tasks ({sortedTasks?.length || 0})
           </h2>
           <div className="flex gap-3 justify-between">

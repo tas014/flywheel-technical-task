@@ -22,7 +22,7 @@ export default function TaskCreationForm() {
         className="grid grid-cols-1 landscape:grid-cols-2 gap-6 p-4 landscape:p-0 lg:p-4 items-start"
       >
         <div className="flex flex-col gap-2">
-          <label htmlFor="title" className="font-medium">
+          <label htmlFor="title" className="text-base font-medium">
             Task Details
           </label>
           <input
@@ -45,7 +45,7 @@ export default function TaskCreationForm() {
         </div>
         <div className="flex flex-col gap-4 landscape:h-full justify-start lg:h-auto lg:justify-start">
           <div className="flex flex-col gap-2">
-            <label htmlFor="due_date" className="font-medium">
+            <label htmlFor="due_date" className="text-base font-medium">
               Due Date
             </label>
             <input

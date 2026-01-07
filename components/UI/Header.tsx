@@ -14,7 +14,9 @@ export default function Header({ username }: { username: string }) {
     <header className="flex place-content-center p-5 bg-(--background-soft)">
       <div className="w-5/6 flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold tracking-tight">Flywheel</h1>
+          <h1 className="text-xl md:text-2xl font-bold tracking-tight">
+            Flywheel
+          </h1>
         </div>
 
         <div className="relative">

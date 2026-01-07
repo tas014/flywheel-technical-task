@@ -34,7 +34,7 @@ export default async function DashboardPage({
 
   return (
     <>
-      <h1 className="md:text-4xl font-bold">FlyWheel task Manager</h1>
+      <h1 className="text-2xl md:text-4xl font-bold">FlyWheel task Manager</h1>
       <section>
         <Dashboard
           sortedTasks={sortedTasks}
